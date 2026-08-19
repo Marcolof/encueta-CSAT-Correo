@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Guía de estilos — Wireframe CSAT · Documentación CSAT</title>
+<link rel="stylesheet" href="../../prototype/styles/tokens.css" />
+<link rel="stylesheet" href="../../prototype/styles/global.css" />
+<link rel="stylesheet" href="../hub.css" />
+<link rel="stylesheet" href="../doc.css" />
+</head>
+<body class="hub-body">
+
+  <header class="hub-header">
+    <div class="hub-header__brand">
+      <img src="../../assets/logo correo argentino.svg" alt="Correo Argentino" />
+      <div class="hub-header__divider"></div>
+      <div class="hub-header__title">Documentación<small>Sistema CSAT</small></div>
+    </div>
+    <a class="hub-header__back" href="../documentacion.html">
+      <svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      Volver a documentación
+    </a>
+  </header>
+
+  <main class="hub-main doc-main">
+    <article class="hub-panel doc-article">
+<h1>Guía de estilos — Wireframe CSAT</h1><p><strong>Estado:</strong> Preliminar / Wireframe  <br/><strong>Fecha:</strong> 13/08/2026  <br/><strong>Alcance:</strong> únicamente baja fidelidad. No representa el diseño visual final.</p><hr/><h2>1. Objetivo</h2><p>Mantener una representación visual neutra que permita discutir:</p><ul><li>jerarquía;</li><li>navegación;</li><li>flujos;</li><li>estados;</li><li>permisos;</li><li>densidad de información;</li></ul><p>sin distraer la revisión con branding o decisiones estéticas definitivas.</p><hr/><h2>2. Principio visual</h2><p><strong>Blanco y negro, estilo wireframe.</strong></p><p>El diseño actual evita:</p><ul><li>colores de marca;</li><li>sombras decorativas;</li><li>gradientes;</li><li>ilustraciones;</li><li>iconografía compleja;</li><li>efectos visuales innecesarios.</li></ul><hr/><h2>3. Paleta actual</h2><h3>Fondo principal</h3><p><code>#FFFFFF</code></p><h3>Texto principal / bordes fuertes</h3><p><code>#111111</code></p><h3>Texto secundario</h3><p><code>#666666</code></p><h3>Bordes secundarios</h3><p><code>#BDBDBD</code></p><h3>Fondo de inputs deshabilitados</h3><p><code>#F3F3F3</code></p><h3>Fondo neutro de headers/tablas</h3><p><code>#F7F7F7</code></p><p><strong>Estado:</strong> temporal.</p><hr/><h2>4. Tipografía actual</h2><p>Familia:</p><p><code>Arial, Helvetica, sans-serif</code></p><p>Uso exclusivo para wireframe.</p><p>Jerarquía aproximada:</p><ul><li>H1: 26 px.</li><li>H2: 19 px.</li><li>H3: 16 px.</li><li>Base: 14 px.</li><li>Texto auxiliar: 12 px.</li></ul><p><strong>Pendiente:</strong> tipografía oficial del producto.</p><hr/><h2>5. Bordes</h2><p>Wireframe actual:</p><ul><li>borde principal: <code>1px solid #111</code>;</li><li>borde secundario: gris;</li><li>componentes claramente delimitados;</li><li>badges de estado con forma de píldora.</li></ul><p>El borde funciona como principal recurso de agrupación.</p><hr/><h2>6. Espaciado</h2><p>Valores aproximados actuales:</p><ul><li>contenedor principal: 28 px;</li><li>panel: 18 px;</li><li>gap estándar: 10–16 px;</li><li>padding de control: 9–10 px;</li><li>separación vertical de paneles: 18 px.</li></ul><p><strong>Estado:</strong> no conforma todavía una escala de spacing formal.</p><hr/><h2>7. Layout</h2><h3>Desktop</h3><p>Sidebar aproximado:</p><p><code>220 px</code></p><p>Contenido:</p><p>fluido.</p><h3>Formularios</h3><ul><li>2 columnas para grupos estándar;</li><li>3 columnas para métricas o campos cortos;</li><li>colapsan a una columna en viewport reducido.</li></ul><hr/><h2>8. Botones</h2><h3>Primario</h3><ul><li>fondo negro;</li><li>texto blanco;</li><li>borde negro.</li></ul><h3>Secundario</h3><ul><li>fondo blanco;</li><li>texto negro;</li><li>borde negro.</li></ul><h3>Deshabilitado</h3><ul><li>opacidad reducida;</li><li>cursor no interactivo.</li></ul><p><strong>Pendiente:</strong> estados hover, focus, pressed y loading definitivos.</p><hr/><h2>9. Inputs</h2><p>Wireframe:</p><ul><li>fondo blanco;</li><li>borde negro;</li><li>label visible arriba;</li><li>ancho completo.</li></ul><h3>Disabled</h3><ul><li>fondo gris claro;</li><li>texto gris;</li><li>cursor no permitido.</li></ul><p>Uso importante para perfil Controlador.</p><hr/><h2>10. Tabs</h2><p>Tab activo:</p><ul><li>fondo negro;</li><li>texto blanco.</li></ul><p>Tab inactivo:</p><ul><li>fondo blanco;</li><li>texto negro;</li><li>borde negro.</li></ul><p>Tabs actuales:</p><ul><li>Todos;</li><li>Activos;</li><li>Borradores;</li><li>Historial.</li></ul><hr/><h2>11. Tablas</h2><ul><li>border-collapse;</li><li>bordes visibles en todas las celdas;</li><li>encabezado gris muy claro;</li><li>acciones al final de la fila;</li><li>alineación izquierda.</li></ul><p><strong>Pendiente:</strong> comportamiento para grandes volúmenes, sticky header, sorting y paginación.</p><hr/><h2>12. Modales</h2><p>Características actuales:</p><ul><li>backdrop oscuro semitransparente;</li><li>caja blanca;</li><li>borde negro;</li><li>ancho aproximado máximo 620 px;</li><li>header + cierre;</li><li>acciones alineadas a la derecha.</li></ul><p>Usos actuales:</p><ul><li>crear operativo;</li><li>finalizar operativo;</li><li>exportar resultados;</li><li>crear usuario.</li></ul><hr/><h2>13. Estados</h2><p>Actualmente se representan mediante texto + borde.</p><p>Ejemplos:</p><ul><li>Activo.</li><li>Borrador.</li><li>Finalizado.</li></ul><p>No se asignaron colores semánticos deliberadamente.</p><hr/><h2>14. Iconografía</h2><p>Estado: <strong>No definida</strong>.</p><p>El wireframe utiliza texto y símbolos mínimos (<code>+</code>, <code>×</code>, <code>←</code>).</p><p>En UI final deberá definirse una librería de iconos y reglas de uso.</p><hr/><h2>15. Accesibilidad visual</h2><p>Pendiente para UI final:</p><ul><li>contraste WCAG;</li><li>foco visible;</li><li>tamaños mínimos de target;</li><li>estados no basados solo en color;</li><li>mensajes de error;</li><li>disabled vs read-only.</li></ul><hr/><h2>16. Lo que NO debe interpretarse como diseño final</h2><ul><li>Arial.</li><li>sidebar de 220 px.</li><li>blanco y negro.</li><li>bordes negros.</li><li>tamaños tipográficos.</li><li>padding actual.</li><li>estructura visual exacta de las tablas.</li><li>botones negros.</li><li>radios actuales.</li><li>ausencia de iconos.</li></ul><p>Todos estos elementos existen únicamente para sostener el wireframe.</p><hr/><h2>17. Próxima etapa</h2><p>Cuando exista definición UI:</p><ol><li>identificar design system corporativo;</li><li>establecer tokens;</li><li>definir tipografía;</li><li>definir color;</li><li>establecer spacing;</li><li>diseñar componentes;</li><li>documentar estados;</li><li>validar accesibilidad;</li><li>reemplazar gradualmente esta guía.</li></ol>
+    </article>
+  </main>
+
+  <footer class="hub-footer">Sistema CSAT · Documentación funcional · Correo Argentino</footer>
+
+</body>
+</html>

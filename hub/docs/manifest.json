@@ -1,0 +1,42 @@
+[
+  {
+    "file": "01_funcional.md",
+    "slug": "01_funcional",
+    "title": "Documentación funcional — Sistema CSAT"
+  },
+  {
+    "file": "02_handoff_roadmap.md",
+    "slug": "02_handoff_roadmap",
+    "title": "Hand-off y roadmap — Sistema CSAT"
+  },
+  {
+    "file": "03_ux.md",
+    "slug": "03_ux",
+    "title": "Documentación UX — Sistema CSAT"
+  },
+  {
+    "file": "04_guia_estilos.md",
+    "slug": "04_guia_estilos",
+    "title": "Guía de estilos — Wireframe CSAT"
+  },
+  {
+    "file": "05_arquitectura.md",
+    "slug": "05_arquitectura",
+    "title": "Arquitectura — Sistema CSAT"
+  },
+  {
+    "file": "06_diseno_ui.md",
+    "slug": "06_diseno_ui",
+    "title": "Diseño UI — Sistema CSAT"
+  },
+  {
+    "file": "LOOK-AND-FEEL-EXPORT.md",
+    "slug": "LOOK-AND-FEEL-EXPORT",
+    "title": "Look & feel — export para otro proyecto (HTML/CSS)"
+  },
+  {
+    "file": "README.md",
+    "slug": "README",
+    "title": "Documentación CSAT — Índice"
+  }
+]

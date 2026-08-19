@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Presentación · Sistema CSAT</title>
+<link rel="stylesheet" href="../prototype/styles/tokens.css" />
+<link rel="stylesheet" href="../prototype/styles/global.css" />
+<link rel="stylesheet" href="hub.css" />
+<style>
+  html, body.hub-body { height: 100%; }
+  body.hub-body { display: flex; flex-direction: column; overflow: hidden; }
+  .hub-header { flex: 0 0 auto; }
+
+  .deck-stage {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px 48px;
+  }
+  .deck { max-width: 1180px; width: 100%; height: 100%; position: relative; margin: 0 auto; }
+  .slide {
+    display: none;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 40px 44px;
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-lg);
+    background: #fff;
+    box-shadow: var(--shadow-card);
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+  .slide.is-active { display: flex; flex-direction: column; justify-content: center; }
+
+  .deck-nav {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    padding: 14px 20px;
+    border-top: 1px solid var(--border-card);
+    background: #fff;
+  }
+  .deck-nav__btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    min-height: 42px; padding: .6rem 1.2rem;
+    border: 1px solid var(--border-card); border-radius: var(--radius-pill);
+    background: #fff; color: var(--color-brand-dark);
+    font-family: var(--font-family-base); font-size: .875rem; font-weight: 700;
+    cursor: pointer; transition: background-color var(--transition-base), border-color var(--transition-base), opacity var(--transition-base);
+  }
+  .deck-nav__btn:hover:not(:disabled) { background: var(--gray-100); border-color: var(--color-brand-dark); }
+  .deck-nav__btn:disabled { opacity: .35; cursor: not-allowed; }
+  .deck-nav__btn .lucide-icon { width: 18px; height: 18px; }
+  .deck-nav__btn--next { background: var(--color-brand-dark); border-color: var(--color-brand-dark); color: #fff; }
+  .deck-nav__btn--next:hover:not(:disabled) { background: var(--color-brand-dark-hover); border-color: var(--color-brand-dark-hover); }
+  .deck-nav__counter { min-width: 64px; text-align: center; font-size: .8125rem; font-weight: 700; color: var(--text-subtle); font-variant-numeric: tabular-nums; }
+
+  .deck-progress { flex: 0 0 auto; height: 3px; background: var(--gray-200); }
+  .deck-progress__bar { height: 100%; background: var(--color-brand); transition: width .25s ease; }
+
+  @media (max-width: 900px) {
+    .deck-stage { padding: 14px 16px; }
+    .slide { padding: 28px 22px; border-radius: var(--radius-md); }
+    .deck-nav { gap: 12px; padding: 12px 14px; }
+    .deck-nav__btn span.btn-label { display: none; }
+  }
+  .slide--dark { background: var(--color-brand-dark); color: #fff; border-color: var(--color-brand-dark); }
+  .slide--dark .muted { color: #aeb7d0; }
+  .slide--dark h1, .slide--dark h2, .slide--dark h3 { color: #fff; }
+  .slide--brand { background: var(--color-brand); border-color: var(--color-brand); }
+
+  .slide-eyebrow { display: inline-flex; align-items:center; gap:8px; margin-bottom: 12px; padding: 4px 12px; border-radius: var(--radius-pill); background: var(--gray-100); color: var(--color-brand-dark); font-size: .6875rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+  .slide--dark .slide-eyebrow { background: rgba(255,255,255,.12); color: var(--color-brand); }
+  .slide--brand .slide-eyebrow { background: rgba(21,38,99,.1); color: var(--color-brand-dark); }
+
+  .slide h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 10px; }
+  .slide h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+  .slide p { color: var(--text-muted); max-width: 720px; }
+  .slide--dark p { color: #cfd6ea; }
+
+  .crumb { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: .95rem; font-weight: 700; }
+  .crumb span:not(.crumb-sep) { padding: 6px 14px; border-radius: var(--radius-pill); background: rgba(255,255,255,.12); }
+  .crumb-sep { color: var(--color-brand); opacity: .8; }
+  .slide:not(.slide--dark) .crumb span:not(.crumb-sep) { background: var(--gray-100); color: var(--color-brand-dark); }
+
+  .title-slide { text-align: left; padding: 64px 56px; }
+  .title-slide h1 { font-size: 2.5rem; font-weight: 800; margin: 14px 0 10px; }
+  .title-slide .muted { font-size: 1rem; margin-bottom: 30px; }
+
+  .obj-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; align-items: start; }
+  .obj-list { display: flex; flex-direction: column; gap: 10px; }
+  .obj-list span { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-md); background: var(--gray-100); font-weight: 700; font-size: .875rem; color: var(--color-brand-dark); }
+  .obj-list span::before { content: "✓"; color: var(--color-success); font-weight: 800; }
+
+  .steps-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 18px; margin-top: 22px; }
+  .step-card { padding: 20px; border-radius: var(--radius-md); background: var(--gray-100); }
+  .step-card b { display: inline-grid; place-items: center; width: 30px; height: 30px; margin-bottom: 12px; border-radius: 50%; background: var(--color-brand); color: var(--color-brand-dark); font-size: .9rem; }
+  .step-card strong { display: block; margin-bottom: 4px; font-size: .95rem; color: var(--text-primary); }
+  .step-card p { margin: 0; font-size: .8125rem; color: var(--text-muted); }
+
+  /* Slides tipo "PASO" con captura embebida */
+  .screen-slide { display: grid; grid-template-columns: 1fr 1.15fr; gap: 36px; align-items: center; }
+  .screen-slide.reverse { grid-template-columns: 1.15fr 1fr; }
+  .screen-slide.reverse .screen-text { order: 2; }
+  .screen-slide.reverse .screen-frame-wrap { order: 1; }
+  .screen-slide > * { min-width: 0; }
+  .screen-text ul { margin: 14px 0 0; padding-left: 18px; color: var(--text-muted); font-size: .875rem; line-height: 1.85; }
+  .screen-text ul li strong { color: var(--text-primary); }
+
+  .role-tag { display:inline-flex; align-items:center; gap:6px; margin-top:18px; padding: 5px 12px; border-radius: var(--radius-pill); font-size:.75rem; font-weight:700; }
+  .role-tag--operador { background:#e7edfb; color:#2563d9; }
+  .role-tag--controlador { background:#e5f6fc; color:#0f9ed5; }
+  .role-tag--admin { background:#f6e8f4; color:#a02b93; }
+
+  .screen-frame-wrap { display: flex; justify-content: center; min-width: 0; }
+  .screen-frame {
+    width: 560px; height: 350px; max-width: 100%;
+    border-radius: var(--radius-md);
+    border: 6px solid var(--gray-900);
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 18px 40px rgba(21,38,99,.18);
+    flex: 0 0 auto;
+  }
+  .screen-frame iframe { width: 1440px; height: 900px; transform: scale(0.3889); transform-origin: top left; border: 0; pointer-events: none; }
+
+  .divider-slide { text-align: center; padding: 70px 40px; }
+  .divider-slide .slide-eyebrow { margin-bottom: 18px; }
+  .divider-slide h2 { font-size: 2rem; }
+
+  .module-list { display:flex; flex-direction:column; gap:14px; margin-top:20px; }
+  .module-item { display:flex; gap:14px; align-items:flex-start; padding:16px; border-radius:var(--radius-md); background:var(--gray-100); }
+  .module-item .lucide-icon { width:22px; height:22px; color:var(--color-brand-dark); flex:0 0 auto; margin-top:2px; }
+  .module-item strong { display:block; margin-bottom:3px; font-size:.9rem; }
+  .module-item p { margin:0; font-size:.8125rem; color:var(--text-muted); }
+
+  .end-slide { text-align: center; padding: 70px 40px; }
+
+  @media (max-width: 900px) {
+    .deck { padding: 0 20px 60px; }
+    .obj-grid, .screen-slide, .screen-slide.reverse { grid-template-columns: 1fr; }
+    .screen-slide.reverse .screen-text, .screen-slide.reverse .screen-frame-wrap { order: initial; }
+    .screen-frame { width: 100%; max-width: 560px; height: 62vw; max-height: 350px; }
+  }
+</style>
+</head>
+<body class="hub-body">
+
+  <header class="hub-header">
+    <div class="hub-header__brand">
+      <img src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+      <div class="hub-header__divider"></div>
+      <div class="hub-header__title">Presentación<small>Instructivo de navegación del flujo · Backoffice CSAT</small></div>
+    </div>
+    <a class="hub-header__back" href="../index.html">
+      <svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      Volver al hub
+    </a>
+  </header>
+
+  <main class="deck-stage">
+   <div class="deck" id="deck">
+
+    <!-- 1. TÍTULO -->
+    <section class="slide slide--brand title-slide">
+      <span class="slide-eyebrow">Sistema CSAT · Backoffice</span>
+      <h1>Operativos de encuesta CSAT</h1>
+      <p class="muted" style="color:#1b2a56;">Instructivo de navegación del flujo — de la creación de un operativo a su cierre.</p>
+      <div class="crumb">
+        <span>Crear</span><span class="crumb-sep">›</span>
+        <span>Configurar</span><span class="crumb-sep">›</span>
+        <span>Lanzar</span><span class="crumb-sep">›</span>
+        <span>Seguimiento</span><span class="crumb-sep">›</span>
+        <span>Finalizar</span>
+      </div>
+    </section>
+
+    <!-- 2. OBJETIVO -->
+    <section class="slide">
+      <span class="slide-eyebrow">Objetivo de la presentación</span>
+      <div class="obj-grid">
+        <div>
+          <h2>Recorrido funcional del prototipo actual</h2>
+          <p>Este instructivo recorre el prototipo navegable tal como está hoy: estados de un operativo, pantallas, tabs y modales. Refleja el entendimiento funcional consolidado en <strong>Documents/01_funcional.md</strong> y las decisiones UX de <strong>03_ux.md</strong>, ambos todavía sujetos a validación con negocio.</p>
+        </div>
+        <div class="obj-list">
+          <span>Estados del operativo</span>
+          <span>Creación y configuración</span>
+          <span>Lanzamiento y seguimiento</span>
+          <span>Finalización e historial</span>
+          <span>Vista por rol (Controlador / Admin)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. EL RECORRIDO -->
+    <section class="slide">
+      <span class="slide-eyebrow">El recorrido de un operativo</span>
+      <h2>Un operativo sigue siempre el mismo orden</h2>
+      <p>Nace en Borrador, se configura, se lanza y eventualmente finaliza — por fecha programada o de forma manual.</p>
+      <div class="steps-row">
+        <div class="step-card"><b>1</b><strong>Crear</strong><p>Modal con nombre y fechas. Nace en estado Borrador.</p></div>
+        <div class="step-card"><b>2</b><strong>Configurar</strong><p>Segmento, región, tipo de entrega, evento T&amp;T y muestreo.</p></div>
+        <div class="step-card"><b>3</b><strong>Lanzar</strong><p>Solo si los campos obligatorios están completos. Borrador → Activo.</p></div>
+        <div class="step-card"><b>4</b><strong>Seguimiento</strong><p>Indicadores acumulados y ejecución del día.</p></div>
+        <div class="step-card"><b>5</b><strong>Finalizar</strong><p>Automático por fecha o manual. Activo → Finalizado → Historial.</p></div>
+      </div>
+    </section>
+
+    <!-- 4. DIVIDER PANTALLAS -->
+    <section class="slide slide--dark divider-slide">
+      <span class="slide-eyebrow">Pantallas</span>
+      <h2>Operativos CSAT — end to end del flujo</h2>
+      <p style="margin:0 auto;">Cada paso siguiente muestra la pantalla real del prototipo navegable.</p>
+    </section>
+
+    <!-- PASO: LOGIN -->
+    <section class="slide">
+      <span class="slide-eyebrow">Acceso</span>
+      <div class="screen-slide">
+        <div class="screen-text">
+          <h2>Login de demostración</h2>
+          <p>Punto de entrada al backoffice. Para el prototipo, el rol se selecciona libremente sin validar usuario ni contraseña.</p>
+          <ul>
+            <li>Login <strong>Admin</strong>, <strong>Operador</strong> o <strong>Controlador</strong>.</li>
+            <li>La navegación disponible cambia según el rol elegido.</li>
+            <li>En una implementación real: SSO, AD u otro sistema corporativo — pendiente de definir.</li>
+          </ul>
+        </div>
+        <div class="screen-frame-wrap">
+          <div class="screen-frame"><iframe src="../prototype/index.html" title="Login"></iframe></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 1: OPERATIVOS TODOS -->
+    <section class="slide">
+      <span class="slide-eyebrow">Paso 1 · Operativos</span>
+      <div class="screen-slide reverse">
+        <div class="screen-frame-wrap">
+          <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.todos" title="Operativos - Todos"></iframe></div>
+        </div>
+        <div class="screen-text">
+          <h2>Vista de trabajo rápido: “Todos”</h2>
+          <p>Punto de partida del Operador. Sin filtros; solo Activos y Borradores, hasta 3 por grupo.</p>
+          <ul>
+            <li>“Ver más activos” / “Ver más borradores” navegan al tab correspondiente.</li>
+            <li>Los operativos <strong>finalizados</strong> nunca aparecen acá — solo en Historial.</li>
+            <li>Acción principal arriba a la derecha: <strong>+ Crear operativo</strong>.</li>
+          </ul>
+          <span class="role-tag role-tag--operador">Operador</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 2: CREAR MODAL -->
+    <section class="slide">
+      <span class="slide-eyebrow">Paso 2 · Creación</span>
+      <div class="screen-slide">
+        <div class="screen-text">
+          <h2>Crear operativo</h2>
+          <p>Modal simple con los tres únicos campos obligatorios para el alta inicial.</p>
+          <ul>
+            <li><strong>Nombre</strong>, <strong>fecha de inicio</strong> y <strong>fecha de finalización</strong>.</li>
+            <li>Al confirmar se crea directamente en estado <strong>Borrador</strong> — el estado no se elige a mano.</li>
+            <li>El usuario continúa la configuración desde el detalle del borrador recién creado.</li>
+          </ul>
+          <span class="role-tag role-tag--operador">Operador</span>
+        </div>
+        <div class="screen-frame-wrap">
+          <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.crearModal" title="Crear operativo"></iframe></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 3: CONFIGURACIÓN BORRADOR -->
+    <section class="slide">
+      <span class="slide-eyebrow">Paso 3 · Configuración</span>
+      <div class="screen-slide reverse">
+        <div class="screen-frame-wrap">
+          <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.detalleBorrador" title="Detalle borrador incompleto"></iframe></div>
+        </div>
+        <div class="screen-text">
+          <h2>Detalle del borrador</h2>
+          <p>Cuatro bloques de configuración: datos generales, público y segmentación, muestreo y encuesta.</p>
+          <ul>
+            <li>Origen/segmento, región, tipo de entrega y evento T&amp;T disparador (<strong>P0=1</strong> domicilio / <strong>P0=3</strong> sucursal).</li>
+            <li>Muestreo: cantidad diaria, límite total opcional y frecuencia.</li>
+            <li>Mientras falten campos obligatorios, el aviso lo indica y <strong>“Lanzar operativo”</strong> permanece deshabilitado.</li>
+          </ul>
+          <span class="role-tag role-tag--operador">Operador</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 4: CONFIG COMPLETA / LANZAR -->
+    <section class="slide">
+      <span class="slide-eyebrow">Paso 4 · Lanzamiento</span>
+      <div class="screen-slide">
+        <div class="screen-text">
+          <h2>Configuración completa → Lanzar</h2>
+          <p>Con todos los campos obligatorios cargados, el aviso cambia y el botón se habilita.</p>
+          <ul>
+            <li><strong>“Configuración completa”</strong> reemplaza la advertencia de campos faltantes.</li>
+            <li><strong>Lanzar operativo</strong> pasa el estado de Borrador a Activo.</li>
+            <li>El operativo pasa a aparecer en el tab Activos.</li>
+          </ul>
+          <span class="role-tag role-tag--operador">Operador</span>
+        </div>
+        <div class="screen-frame-wrap">
+          <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.detalleBorrador.completo" title="Detalle borrador completo"></iframe></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 5: SEGUIMIENTO ACTIVO -->
+    <section class="slide">
+      <span class="slide-eyebrow">Paso 5 · Seguimiento</span>
+      <div class="screen-slide reverse">
+        <div class="screen-frame-wrap">
+          <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.detalleActivo" title="Detalle activo"></iframe></div>
+        </div>
+        <div class="screen-text">
+          <h2>Detalle de un operativo activo</h2>
+          <p>Responde rápido a "¿está ejecutándose según lo previsto?" sin ser un dashboard de BI completo.</p>
+          <ul>
+            <li>Indicadores acumulados: encuestas enviadas, respondidas y tasa de respuesta.</li>
+            <li>Ejecución del día: muestra prevista, enviadas, pendientes y respuestas recibidas.</li>
+            <li>Última y próxima ejecución programada.</li>
+          </ul>
+          <span class="role-tag role-tag--operador">Operador</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 6: FINALIZAR MODAL -->
+    <section class="slide">
+      <span class="slide-eyebrow">Paso 6 · Finalización</span>
+      <div class="screen-slide">
+        <div class="screen-text">
+          <h2>Finalizar operativo</h2>
+          <p>Puede finalizar automáticamente por fecha programada, o manualmente desde este modal.</p>
+          <ul>
+            <li>Confirmación de la acción + motivo de finalización opcional.</li>
+            <li>Deja de seleccionar nuevos casos y de generar nuevos envíos de encuesta.</li>
+            <li>El operativo pasa de Activo a Finalizado y se mueve a Historial.</li>
+          </ul>
+          <span class="role-tag role-tag--operador">Operador</span>
+        </div>
+        <div class="screen-frame-wrap">
+          <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.finalizarModal" title="Finalizar operativo"></iframe></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASO 7: HISTORIAL / FINALIZADO -->
+    <section class="slide">
+      <span class="slide-eyebrow">Paso 7 · Historial</span>
+      <div class="screen-slide reverse">
+        <div class="screen-frame-wrap">
+          <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.detalleFinal" title="Detalle finalizado"></iframe></div>
+        </div>
+        <div class="screen-text">
+          <h2>Operativo finalizado</h2>
+          <p>El cierre no es el momento en que se "entregan" los resultados: solo detiene la producción de nuevos casos.</p>
+          <ul>
+            <li>Resumen de cierre: fecha, tipo de finalización, resultados y consumo por Analytics.</li>
+            <li>Los resultados ya fueron persistidos en la BD CSAT durante la ejecución.</li>
+            <li>Consulta exclusiva desde el tab <strong>Historial</strong>.</li>
+          </ul>
+          <span class="role-tag role-tag--operador">Operador</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- MÓDULO: CONTROLADOR -->
+    <section class="slide slide--dark divider-slide">
+      <span class="slide-eyebrow">Módulo</span>
+      <h2>Vista Controlador — solo lectura</h2>
+      <p style="margin:0 auto;">Mismas pantallas que el Operador, con la gestión deshabilitada.</p>
+    </section>
+
+    <section class="slide">
+      <div class="screen-slide">
+        <div class="screen-text">
+          <h2>Consulta sin edición</h2>
+          <p>El Controlador puede navegar todo, pero no puede modificar nada.</p>
+          <ul>
+            <li>Puede consultar <strong>todos</strong> los operativos, incluidos borradores.</li>
+            <li>Inputs, selects y acciones de gestión aparecen deshabilitados.</li>
+            <li>No puede guardar, lanzar ni finalizar operativos.</li>
+            <li>Pendiente de validar: si necesita exportación manual de resultados.</li>
+          </ul>
+          <span class="role-tag role-tag--controlador">Controlador</span>
+        </div>
+        <div class="screen-frame-wrap">
+          <div class="screen-frame"><iframe src="../prototype/index.html?goto=controlador.detalleBorrador.completo" title="Detalle borrador - Controlador"></iframe></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MÓDULO: ADMIN -->
+    <section class="slide slide--dark divider-slide">
+      <span class="slide-eyebrow">Módulo</span>
+      <h2>Usuarios y roles — perfil Admin</h2>
+      <p style="margin:0 auto;">Propuesta UX para representar autenticación, acceso y permisos.</p>
+    </section>
+
+    <section class="slide">
+      <div class="screen-slide reverse">
+        <div class="screen-frame-wrap">
+          <div class="screen-frame"><iframe src="../prototype/index.html?goto=admin.usuarios" title="Usuarios y roles"></iframe></div>
+        </div>
+        <div class="screen-text">
+          <h2>Gestión de usuarios</h2>
+          <p>Única sección disponible para el rol Admin.</p>
+          <ul>
+            <li>Alta de usuario: nombre y apellido, email, contraseña y rol.</li>
+            <li>Filtro por rol y búsqueda con paginación.</li>
+            <li>Propuesta UX del prototipo — no es un requerimiento confirmado del GDD-773.</li>
+          </ul>
+          <span class="role-tag role-tag--admin">Admin</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTEGRACIONES -->
+    <section class="slide">
+      <span class="slide-eyebrow">Detrás de escena</span>
+      <h2>Lo que el usuario no necesita ver</h2>
+      <p>La interfaz trabaja con conceptos de negocio; estas integraciones quedan ocultas.</p>
+      <div class="module-list">
+        <div class="module-item">
+          <svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/></svg>
+          <div><strong>Track &amp; Trace (T&amp;T)</strong><p>Eventos del ciclo de vida del envío como disparadores. Ej: P0=1 entrega en domicilio, P0=3 en sucursal.</p></div>
+        </div>
+        <div class="module-item">
+          <svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <div><strong>Proveedor WhatsApp</strong><p>Canal inicial de envío de encuestas, vía integrador externo.</p></div>
+        </div>
+        <div class="module-item">
+          <svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+          <div><strong>BD CSAT</strong><p>Persistencia de resultados, asociados al ID de envío correspondiente.</p></div>
+        </div>
+        <div class="module-item">
+          <svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+          <div><strong>Analytics / Clixsense</strong><p>Consumo periódico de resultados persistidos. No depende de finalizar el operativo.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIN -->
+    <section class="slide slide--brand end-slide">
+      <span class="slide-eyebrow">Fin del recorrido</span>
+      <h2 style="color:var(--color-brand-dark);">Un operativo completo sigue siempre el mismo orden</h2>
+      <div class="crumb" style="justify-content:center; margin-top:16px;">
+        <span>Crear</span><span class="crumb-sep">›</span>
+        <span>Configurar</span><span class="crumb-sep">›</span>
+        <span>Lanzar</span><span class="crumb-sep">›</span>
+        <span>Seguimiento</span><span class="crumb-sep">›</span>
+        <span>Finalizar</span>
+      </div>
+      <p style="margin:22px auto 0; color:#1b2a56;">Instructivo de navegación · Sistema CSAT — Backoffice · Correo Argentino</p>
+    </section>
+
+   </div>
+  </main>
+
+  <div class="deck-progress"><div class="deck-progress__bar" id="progressBar"></div></div>
+  <nav class="deck-nav">
+    <button type="button" class="deck-nav__btn" id="prevBtn" aria-label="Slide anterior">
+      <svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <span class="btn-label">Anterior</span>
+    </button>
+    <div class="deck-nav__counter"><span id="slideCurrent">1</span> / <span id="slideTotal">1</span></div>
+    <button type="button" class="deck-nav__btn deck-nav__btn--next" id="nextBtn" aria-label="Siguiente slide">
+      <span class="btn-label">Siguiente</span>
+      <svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </nav>
+
+  <script>
+    (function () {
+      const slides = Array.from(document.querySelectorAll('#deck .slide'));
+      const total = slides.length;
+      const currentEl = document.getElementById('slideCurrent');
+      const totalEl = document.getElementById('slideTotal');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const progressBar = document.getElementById('progressBar');
+      totalEl.textContent = total;
+
+      let index = Math.min(Math.max(parseInt((location.hash || '').replace('#', ''), 10) - 1 || 0, 0), total - 1);
+
+      function render() {
+        slides.forEach((s, i) => s.classList.toggle('is-active', i === index));
+        currentEl.textContent = index + 1;
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === total - 1;
+        progressBar.style.width = ((index + 1) / total * 100) + '%';
+        history.replaceState(null, '', '#' + (index + 1));
+        slides[index].scrollTop = 0;
+      }
+
+      function go(delta) {
+        const next = index + delta;
+        if (next < 0 || next >= total) return;
+        index = next;
+        render();
+      }
+
+      prevBtn.addEventListener('click', () => go(-1));
+      nextBtn.addEventListener('click', () => go(1));
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(1); }
+        else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(-1); }
+      });
+
+      let touchX = null;
+      document.querySelector('.deck-stage').addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; }, { passive: true });
+      document.querySelector('.deck-stage').addEventListener('touchend', e => {
+        if (touchX === null) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+        touchX = null;
+      }, { passive: true });
+
+      render();
+    })();
+  </script>
+
+</body>
+</html>

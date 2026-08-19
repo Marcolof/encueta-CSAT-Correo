@@ -1,0 +1,41 @@
+/* Tipografía de artículo para los documentos Markdown renderizados */
+.doc-main { max-width: 880px; }
+.doc-article { padding: 44px 52px; }
+
+.doc-article h1 { font-size: 1.9rem; font-weight: 800; margin: 0 0 6px; color: var(--color-brand-dark); }
+.doc-article h1 + p { color: var(--text-subtle); font-size: .875rem; margin-top: 0; }
+.doc-article h2 { font-size: 1.3rem; font-weight: 700; margin: 34px 0 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border-subtle); color: var(--text-primary); }
+.doc-article h2:first-child { margin-top: 0; }
+.doc-article h3 { font-size: 1.05rem; font-weight: 700; margin: 22px 0 8px; color: var(--text-primary); }
+.doc-article h4 { font-size: .9375rem; font-weight: 700; margin: 18px 0 6px; color: var(--text-muted); }
+
+.doc-article p { margin: 0 0 14px; color: var(--text-muted); font-size: .9375rem; line-height: 1.75; }
+.doc-article strong { color: var(--text-primary); font-weight: 700; }
+.doc-article em { font-style: italic; }
+
+.doc-article ul, .doc-article ol { margin: 0 0 16px; padding-left: 22px; color: var(--text-muted); font-size: .9375rem; line-height: 1.85; }
+.doc-article li { margin-bottom: 2px; }
+.doc-article ul ul, .doc-article ol ul, .doc-article ul ol, .doc-article ol ol { margin-bottom: 0; margin-top: 4px; }
+
+.doc-article a { color: var(--color-brand-dark); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.doc-article a:hover { text-decoration-thickness: 2px; }
+
+.doc-article code { padding: 2px 6px; border-radius: 4px; background: var(--gray-100); color: #a02b93; font-family: "Courier New", monospace; font-size: .85em; }
+
+.doc-article pre.doc-code { margin: 0 0 18px; padding: 16px 18px; border-radius: var(--radius-md); background: var(--gray-900); overflow-x: auto; }
+.doc-article pre.doc-code code { padding: 0; background: none; color: #e4e7ef; font-size: .8125rem; line-height: 1.6; }
+
+.doc-article blockquote { margin: 0 0 16px; padding: 12px 18px; border-left: 3px solid var(--color-brand); border-radius: 0 var(--radius-md) var(--radius-md) 0; background: var(--gray-100); color: var(--text-muted); font-size: .9375rem; }
+
+.doc-article hr { margin: 30px 0; border: none; border-top: 1px solid var(--border-subtle); }
+
+.doc-table-wrap { margin: 0 0 18px; overflow-x: auto; }
+.doc-article table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--border-card); border-radius: var(--radius-md); overflow: hidden; font-size: .8125rem; }
+.doc-article th, .doc-article td { padding: 10px 14px; border-bottom: 1px solid var(--border-subtle); text-align: left; vertical-align: top; }
+.doc-article thead th { background: var(--gray-100); color: var(--text-muted); font-weight: 700; }
+.doc-article tbody tr:last-child td { border-bottom: 0; }
+.doc-article tbody tr:hover { background: #fafbfc; }
+
+@media (max-width: 700px) {
+  .doc-article { padding: 30px 22px; }
+}

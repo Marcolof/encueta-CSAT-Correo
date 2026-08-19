@@ -1,0 +1,6 @@
+# Copia local del sitio real de MiCorreo (no se publica: repo público)
+html reference/
+
+# SO / editores
+Thumbs.db
+.DS_Store

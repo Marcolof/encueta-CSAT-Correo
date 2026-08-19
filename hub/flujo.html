@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flujo de navegación · Sistema CSAT</title>
+<link rel="stylesheet" href="../prototype/styles/tokens.css" />
+<link rel="stylesheet" href="../prototype/styles/global.css" />
+<link rel="stylesheet" href="hub.css" />
+<style>
+  /* Diagrama de flujo — específico de esta página */
+  .flow-legend { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-bottom: 32px; }
+  .flow-legend__item { display: flex; align-items: center; gap: 8px; font-size: .8125rem; font-weight: 700; color: var(--text-muted); }
+  .flow-dot { width: 11px; height: 11px; border-radius: 50%; flex: 0 0 auto; }
+  .flow-dot--admin { background: #a02b93; }
+  .flow-dot--operador { background: #2563d9; }
+  .flow-dot--controlador { background: #0f9ed5; }
+  .flow-dot--all { background: var(--color-brand-dark); }
+
+  .flow-lane { display: flex; gap: 26px; margin-bottom: 8px; }
+  .flow-lane__label {
+    flex: 0 0 148px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--text-subtle);
+    text-transform: uppercase;
+    letter-spacing: .03em;
+  }
+  .flow-lane__track {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 18px 0;
+    border-top: 1px dashed var(--border-subtle);
+  }
+  .flow-lane:first-of-type .flow-lane__track { border-top: none; padding-top: 0; }
+
+  .flow-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+
+  .flow-node {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 150px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border-card);
+    border-radius: var(--radius-md);
+    background: #fff;
+    box-shadow: var(--shadow-card);
+  }
+  .flow-node strong { font-size: .8125rem; color: var(--text-primary); }
+  .flow-node span { font-size: .6875rem; color: var(--text-subtle); line-height: 1.35; }
+
+  .flow-node--entry { border-color: var(--color-brand-dark); background: var(--color-brand-dark); }
+  .flow-node--entry strong { color: #fff; }
+  .flow-node--entry span { color: #aeb7d0; }
+
+  .flow-node--hub { border-color: var(--color-brand); background: #fffdf2; }
+  .flow-node--modal { border-style: dashed; background: var(--gray-100); }
+  .flow-node--modal strong::before { content: "◇ "; color: var(--text-subtle); }
+  .flow-node--end { border-color: var(--color-success); }
+
+  .flow-arrow { flex: 0 0 auto; color: var(--gray-500); font-size: 1.1rem; line-height: 1; }
+  .flow-arrow--down { display: block; margin: 2px 0 2px 24px; color: var(--gray-500); }
+
+  .flow-sub {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border-card);
+    border-radius: var(--radius-md);
+    background: #fff;
+    box-shadow: var(--shadow-card);
+  }
+  .flow-sub__title { font-size: .8125rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+  .flow-sub__title small { display: block; font-weight: 600; color: var(--text-subtle); font-size: .6875rem; margin-top: 2px; }
+  .flow-sub__tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .flow-chip {
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--gray-100);
+    color: var(--color-brand-dark);
+    font-size: .6875rem;
+    font-weight: 700;
+  }
+  .flow-chip--muted { background: transparent; border: 1px dashed var(--border-default); color: var(--text-subtle); }
+
+  .flow-branches { display: flex; flex-direction: column; gap: 10px; }
+  .flow-branch { display: flex; align-items: center; gap: 10px; }
+  .flow-branch__from { flex: 0 0 118px; font-size: .6875rem; font-weight: 700; color: var(--text-subtle); text-align: right; }
+
+  .flow-note {
+    margin-top: 6px;
+    padding: 3px 0 0;
+    font-size: .6875rem;
+    color: var(--text-subtle);
+  }
+
+  .modal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+
+  @media (max-width: 900px) {
+    .flow-lane { flex-direction: column; gap: 8px; }
+    .flow-lane__label { flex: none; }
+  }
+</style>
+</head>
+<body class="hub-body">
+
+  <header class="hub-header">
+    <div class="hub-header__brand">
+      <img src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+      <div class="hub-header__divider"></div>
+      <div class="hub-header__title">Flujo de navegación<small>Sitemap del backoffice CSAT</small></div>
+    </div>
+    <a class="hub-header__back" href="../index.html">
+      <svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      Volver al hub
+    </a>
+  </header>
+
+  <main class="hub-main">
+    <div class="hub-hero">
+      <h1>Cuadro de navegación</h1>
+      <p>Pantallas, tabs y modales del backoffice, y cómo se conectan entre sí. Los colores indican qué rol puede llegar a cada nodo; los recuadros punteados son modales/acciones, no pantallas propias.</p>
+    </div>
+
+    <div class="flow-legend">
+      <span class="flow-legend__item"><span class="flow-dot flow-dot--all"></span> Todos los roles</span>
+      <span class="flow-legend__item"><span class="flow-dot flow-dot--admin"></span> Admin</span>
+      <span class="flow-legend__item"><span class="flow-dot flow-dot--operador"></span> Operador</span>
+      <span class="flow-legend__item"><span class="flow-dot flow-dot--controlador"></span> Controlador</span>
+    </div>
+
+    <div class="hub-panel" style="margin-bottom:28px;">
+
+      <!-- ACCESO -->
+      <div class="flow-lane">
+        <div class="flow-lane__label"><span class="flow-dot flow-dot--all"></span>Acceso</div>
+        <div class="flow-lane__track">
+          <div class="flow-row">
+            <div class="flow-node flow-node--entry">
+              <strong>Login</strong>
+              <span>Selección libre de rol (demo)</span>
+            </div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-sub">
+              <div class="flow-sub__title">Se ramifica por rol</div>
+              <div class="flow-sub__tabs">
+                <span class="flow-chip" style="background:#f6e8f4;color:#a02b93;">Admin</span>
+                <span class="flow-chip" style="background:#e7edfb;color:#2563d9;">Operador</span>
+                <span class="flow-chip" style="background:#e5f6fc;color:#0f9ed5;">Controlador</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NAVEGACIÓN PRINCIPAL -->
+      <div class="flow-lane">
+        <div class="flow-lane__label"><span class="flow-dot flow-dot--admin"></span>Admin</div>
+        <div class="flow-lane__track">
+          <div class="flow-row">
+            <div class="flow-node flow-node--hub">
+              <strong>Usuarios y roles</strong>
+              <span>Única opción de sidebar para Admin</span>
+            </div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node flow-node--modal">
+              <strong>Crear / editar usuario</strong>
+              <span>Modal: nombre, email, contraseña, rol</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-lane">
+        <div class="flow-lane__label"><span class="flow-dot flow-dot--operador"></span><span class="flow-dot flow-dot--controlador"></span>Operador / Controlador</div>
+        <div class="flow-lane__track">
+          <div class="flow-sub" style="flex:1;">
+            <div class="flow-sub__title">Operativos<small>Única opción de sidebar para estos roles</small></div>
+            <div class="flow-sub__tabs">
+              <span class="flow-chip">Todos</span>
+              <span class="flow-chip">Activos</span>
+              <span class="flow-chip">Borradores</span>
+              <span class="flow-chip">Historial</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LISTADOS → DETALLE -->
+      <div class="flow-lane">
+        <div class="flow-lane__label"><span class="flow-dot flow-dot--all"></span>Listados → detalle</div>
+        <div class="flow-lane__track">
+          <div class="flow-branches" style="width:100%;">
+
+            <div class="flow-branch">
+              <span class="flow-branch__from">Tab Todos</span>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="min-width:180px;"><strong>“Ver más activos / borradores”</strong><span>Máx. 3 por grupo, sin finalizados</span></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node"><strong>Tab Activos / Borradores</strong><span>Lista completa + filtros</span></div>
+            </div>
+
+            <div class="flow-branch">
+              <span class="flow-branch__from">Tab Activos</span>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="min-width:130px;"><strong>“Ver”</strong></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node flow-node--hub"><strong>Detalle Activo</strong><span>Indicadores + ejecución de hoy</span></div>
+            </div>
+
+            <div class="flow-branch">
+              <span class="flow-branch__from">Tab Borradores</span>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="min-width:130px;"><strong>“Continuar”</strong></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node flow-node--hub"><strong>Detalle Borrador</strong><span>Solo lectura si es Controlador</span></div>
+            </div>
+
+            <div class="flow-branch">
+              <span class="flow-branch__from">Tab Historial</span>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node" style="min-width:130px;"><strong>“Ver”</strong></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node flow-node--hub"><strong>Detalle Finalizado</strong><span>Resumen de cierre y resultados</span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- MODALES / ACCIONES -->
+      <div class="flow-lane">
+        <div class="flow-lane__label"><span class="flow-dot flow-dot--operador"></span>Acciones (Operador)</div>
+        <div class="flow-lane__track">
+          <div class="modal-grid" style="width:100%;">
+            <div class="flow-branch">
+              <div class="flow-node flow-node--hub" style="min-width:110px;"><strong>Operativos</strong><span>Cualquier tab</span></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node flow-node--modal"><strong>Crear operativo</strong><span>Nombre + fechas → nace en Borrador</span></div>
+            </div>
+            <div class="flow-branch">
+              <div class="flow-node flow-node--hub" style="min-width:110px;"><strong>Detalle Borrador</strong></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node flow-node--end"><strong>Lanzar operativo</strong><span>Habilitado con campos completos → pasa a Activo</span></div>
+            </div>
+            <div class="flow-branch">
+              <div class="flow-node flow-node--hub" style="min-width:110px;"><strong>Detalle Activo</strong></div>
+              <span class="flow-arrow">→</span>
+              <div class="flow-node flow-node--modal"><strong>Finalizar operativo</strong><span>Confirmación + motivo opcional → pasa a Historial</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-lane">
+        <div class="flow-lane__label"><span class="flow-dot flow-dot--controlador"></span>Acciones (Controlador)</div>
+        <div class="flow-lane__track">
+          <div class="flow-branch">
+            <div class="flow-node flow-node--hub" style="min-width:170px;"><strong>Detalle Activo / Finalizado</strong></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node flow-node--modal"><strong>Exportar resultados</strong><span>Propuesta pendiente de validación</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-lane">
+        <div class="flow-lane__label"><span class="flow-dot flow-dot--all"></span>Salida</div>
+        <div class="flow-lane__track">
+          <div class="flow-branch">
+            <div class="flow-node" style="min-width:110px;"><strong>Cualquier pantalla</strong></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node" style="min-width:110px;"><strong>Cerrar sesión</strong></div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-node flow-node--entry"><strong>Login</strong></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="hub-section">
+      <h2>Reglas de navegación</h2>
+      <p class="muted">Extraídas de la documentación funcional y UX del proyecto.</p>
+      <div class="hub-panel">
+        <ul style="margin:0; padding-left:20px; color:var(--text-muted); font-size:.875rem; line-height:1.9;">
+          <li>El tab <strong>Todos</strong> no tiene filtros propios y nunca muestra operativos finalizados; solo redirige a Activos/Borradores.</li>
+          <li>Todo operativo nuevo nace en <strong>Borrador</strong> — no existe un "Crear operativo" que permita elegir el estado inicial.</li>
+          <li><strong>Historial</strong> es exclusivo de operativos finalizados; nunca se mezcla con la actividad en curso.</li>
+          <li>El <strong>Controlador</strong> puede navegar a las mismas pantallas que el Operador, pero todos los inputs, selects y acciones de gestión quedan deshabilitados.</li>
+          <li><strong>Admin</strong> no ve la sección Operativos: su sidebar solo expone Usuarios y roles.</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer class="hub-footer">Sistema CSAT · Flujo de navegación · Basado en <a href="documentacion.html" style="color:inherit;">Documents/01_funcional.md</a> y <a href="documentacion.html" style="color:inherit;">03_ux.md</a></footer>
+
+</body>
+</html>

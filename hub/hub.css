@@ -1,0 +1,180 @@
+/* Hub — estilos compartidos entre index.html (HUB) y las subpáginas de /hub.
+   Reutiliza tokens.css y global.css del prototipo para no duplicar la fuente de verdad. */
+
+html { background: var(--global-bg); }
+
+body.hub-body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-min);
+  font-synthesis: none;
+  color: var(--text-primary);
+  background: var(--global-bg);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.hub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 48px;
+  background: var(--color-brand-dark);
+  color: #fff;
+}
+
+.hub-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hub-header__brand img { display: block; width: 150px; height: auto; filter: brightness(0) invert(1); }
+
+.hub-header__divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, .22);
+}
+
+.hub-header__title { font-size: .95rem; font-weight: 700; letter-spacing: .01em; }
+.hub-header__title small { display: block; margin-top: 2px; color: #aeb7d0; font-size: .75rem; font-weight: 600; }
+
+.hub-header__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  text-decoration: none;
+  font-size: .875rem;
+  font-weight: 600;
+  padding: .55rem .95rem;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-base), border-color var(--transition-base);
+}
+.hub-header__back:hover { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .4); }
+.hub-header__back .lucide-icon { width: 18px; height: 18px; transform: scaleX(-1); }
+
+.hub-main { max-width: 1180px; margin: 0 auto; padding: 48px 48px 80px; }
+
+.hub-hero { margin-bottom: 40px; }
+.hub-hero h1 { margin: 0 0 8px; font-size: 2rem; font-weight: 700; color: var(--text-primary); }
+.hub-hero p { margin: 0; max-width: 640px; color: var(--text-muted); font-size: 1rem; }
+.hub-hero .status-pill {
+  display: inline-flex; align-items: center; gap: 6px; margin-bottom: 16px;
+  padding: 5px 12px; border-radius: var(--radius-pill); background: #eef3ff; color: #2563d9;
+  font-size: .75rem; font-weight: 700; letter-spacing: .01em; text-transform: uppercase;
+}
+
+/* Grid de cards del HUB */
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.hub-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 28px;
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+.hub-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 206, 0, .08), transparent 55%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+}
+.hub-card:hover { transform: translateY(-3px); border-color: var(--color-brand-dark); box-shadow: 0 10px 24px rgba(21, 38, 99, .12); }
+.hub-card:hover::after { opacity: 1; }
+
+.hub-card__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: var(--color-brand-dark);
+  color: var(--color-brand);
+}
+.hub-card__icon .lucide-icon { width: 26px; height: 26px; }
+
+.hub-card__num {
+  position: absolute;
+  top: 24px;
+  right: 26px;
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--gray-200);
+  line-height: 1;
+}
+
+.hub-card h2 { margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--text-primary); }
+.hub-card p { margin: 0; color: var(--text-muted); font-size: .875rem; flex: 1; }
+
+.hub-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: .8125rem;
+  font-weight: 700;
+  color: var(--color-brand-dark);
+}
+.hub-card__meta .lucide-icon { width: 17px; height: 17px; transition: transform var(--transition-base); }
+.hub-card:hover .hub-card__meta .lucide-icon { transform: translateX(3px); }
+
+.hub-card__tag {
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--gray-100);
+  color: var(--text-muted);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 860px) {
+  .hub-grid { grid-template-columns: 1fr; }
+  .hub-header { padding: 18px 22px; flex-wrap: wrap; }
+  .hub-main { padding: 32px 20px 60px; }
+}
+
+/* Secciones internas (flujo / presentación / documentación) */
+.hub-section { margin-bottom: 40px; }
+.hub-section h2 { font-size: 1.35rem; font-weight: 700; margin-bottom: 6px; }
+.hub-section .muted { color: var(--text-muted); margin-bottom: 20px; }
+
+.hub-panel {
+  padding: 28px;
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  box-shadow: var(--shadow-card);
+}
+
+.hub-footer {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 48px 40px;
+  color: var(--text-subtle);
+  font-size: .75rem;
+}
+@media (max-width: 860px) { .hub-footer { padding: 0 20px 32px; } }

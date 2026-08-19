@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Look & feel — export para otro proyecto (HTML/CSS) · Documentación CSAT</title>
+<link rel="stylesheet" href="../../prototype/styles/tokens.css" />
+<link rel="stylesheet" href="../../prototype/styles/global.css" />
+<link rel="stylesheet" href="../hub.css" />
+<link rel="stylesheet" href="../doc.css" />
+</head>
+<body class="hub-body">
+
+  <header class="hub-header">
+    <div class="hub-header__brand">
+      <img src="../../assets/logo correo argentino.svg" alt="Correo Argentino" />
+      <div class="hub-header__divider"></div>
+      <div class="hub-header__title">Documentación<small>Sistema CSAT</small></div>
+    </div>
+    <a class="hub-header__back" href="../documentacion.html">
+      <svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      Volver a documentación
+    </a>
+  </header>
+
+  <main class="hub-main doc-main">
+    <article class="hub-panel doc-article">
+<h1>Look &amp; feel — export para otro proyecto (HTML/CSS)</h1><p>Extracto del sistema visual de MiCorreo pensado para **portar a un proyecto HTML distinto**, no para documentar este repo. No es una calca 1:1 de <a href="DESIGN-TOKENS.md"><code>DESIGN-TOKENS.md</code></a> (que mapea el CSS legacy → tokens de <em>este</em> proyecto): acá lo que importa es el <strong>criterio</strong> — jerarquía de color, escalas de tamaño, anatomía de botones — descripto de forma genérica para que sirva de base en otro contexto, con nombres de variable neutros (no ligados a la marca "Correo").</p><p>Lo que <strong>no</strong> se incluye a propósito: nada de layout específico de pantallas, nada de copy, nada de lógica de negocio. Es sólo el lenguaje visual: color, tipografía, espaciado, radios, sombras y la anatomía de los componentes base (botón, campo, badge, tab, modal).</p><hr/><h2>1. Cómo pensar el color: 3 capas</h2><p>No hay que copiar los hex sueltos — hay que copiar la <strong>estructura de tres capas</strong>, que es lo que realmente sostiene la consistencia:</p><pre class="doc-code"><code class="lang-txt">1. PRIMITIVE  → valor crudo, sin significado ("amarillo #ffce00", "gris 700")
+2. SEMANTIC   → rol de uso ("color de marca", "texto atenuado", "superficie elevada")
+3. COMPONENT  → uso puntual de un componente ("fondo de botón primario")</code></pre><p>Un componente <strong>nunca</strong> debería usar un valor <code>primitive</code> directo. Si un botón usa <code>--color-brand</code> (semantic) y no <code>#ffce00</code> (primitive), cambiar la marca es cambiar una sola línea. Esta regla importa más que los valores en sí.</p><h3>Jerarquía de color observada</h3><ul><li><strong>1 color de marca dominante</strong> (amarillo, <code>#ffce00</code>) — se usa en fondos de botón</li></ul><p>  primario, header, bordes de foco visual, estado activo de tabs/stepper. Es el color   de <strong>acción e identidad</strong>, no de texto (el contraste amarillo/blanco es pobre).</p><ul><li><strong>1 color de marca "oscuro" de apoyo</strong> (azul marino, <code>#152663</code>) — hace de</li></ul><p>  contraste de texto sobre amarillo (<code>color-brand-contrast</code>), y también de color de   <strong>link/acento</strong> en superficies claras. Funciona como el "texto sobre marca" y como   segundo color de marca en su propio derecho (headers de nodo tipo "fin de flujo",   iconografía).</p><ul><li><strong>Escala de grises de 9 pasos</strong> para todo lo que no es marca: superficies (fondo de</li></ul><p>  página vs. tarjeta vs. hundido), bordes, texto en 4 niveles de énfasis   (primario/secundario/atenuado/deshabilitado).</p><ul><li><strong>3 colores de estado</strong> (error/éxito/advertencia), cada uno con su propio par</li></ul><p>  fondo+texto+borde — nunca se reusa el rojo de error para otra cosa.</p><p><strong>Regla de contraste implícita en el original:</strong> el amarillo de marca casi nunca lleva texto blanco encima — siempre azul marino. El azul marino sí lleva texto blanco. Es una decisión de contraste, no estética: mantenerla al portar.</p><h3>Paleta primitiva</h3><div class="doc-table-wrap"><table><thead><tr><th>Token</th><th>Valor</th><th>Uso típico</th></tr></thead><tbody><tr><td><code>--color-brand</code></td><td><code>#ffce00</code></td><td>Fondo de botón primario, header, foco, activo</td></tr><tr><td><code>--color-brand-dark</code></td><td><code>#152663</code></td><td>Texto sobre marca, links, acento, footer/fin de flujo</td></tr><tr><td><code>--gray-50</code></td><td><code>#fafafa</code></td><td>Fondo de página</td></tr><tr><td><code>--gray-100</code></td><td><code>#f2f2f2</code></td><td>Superficie "hundida" (inputs de sólo lectura, fondo de sección)</td></tr><tr><td><code>--gray-200</code></td><td><code>#eeeeee</code></td><td>Riel de navegación, hover de fila de tabla</td></tr><tr><td><code>--gray-300</code></td><td><code>#d9d9d9</code></td><td>Fondo deshabilitado</td></tr><tr><td><code>--gray-400</code></td><td><code>#cccccc</code></td><td>Borde por defecto (inputs, cards)</td></tr><tr><td><code>--gray-500</code></td><td><code>#afaeae</code></td><td>Borde secundario / divisor sutil</td></tr><tr><td><code>--gray-600</code></td><td><code>#8a8a8a</code></td><td>Texto deshabilitado</td></tr><tr><td><code>--gray-650</code></td><td><code>#79747e</code></td><td>Texto "subtle" (subtítulos, footer)</td></tr><tr><td><code>--gray-700</code></td><td><code>#49454f</code></td><td>Texto atenuado (labels, ayuda)</td></tr><tr><td><code>--gray-800</code></td><td><code>#212529</code></td><td>Texto secundario</td></tr><tr><td><code>--gray-900</code></td><td><code>#191919</code></td><td>Texto primario (nunca negro puro)</td></tr><tr><td><code>--white</code></td><td><code>#ffffff</code></td><td>Superficie elevada (tarjetas, modales, campos)</td></tr><tr><td><code>--red-100</code> / <code>--red-600</code> / <code>--red-700</code></td><td><code>#ffd0d0</code> / <code>#d32f2f</code> / <code>#ed143d</code></td><td>Fondo / texto / texto fuerte de error</td></tr><tr><td><code>--green-100</code> / <code>--green-700</code></td><td><code>#d1e7dd</code> / <code>#0f5132</code></td><td>Fondo / texto de éxito</td></tr><tr><td><code>--yellow-100</code> / <code>--yellow-900</code></td><td><code>#fff3cd</code> / <code>#664d03</code></td><td>Fondo / texto de advertencia</td></tr><tr><td><code>--blue-focus</code></td><td><code>#2196f3</code></td><td>Borde de campo enfocado (deliberadamente distinto del azul de marca)</td></tr></tbody></table></div><h3>Capa semántica (la que realmente se consume)</h3><pre class="doc-code"><code class="lang-css">/* Marca */
+--color-brand-contrast: var(--color-brand-dark);
+--color-accent:         var(--color-brand-dark);
+
+/* Superficies, de "más plana" a "más elevada" */
+--surface-page:     var(--gray-50);   /* body */
+--surface-sunken:   var(--gray-100);  /* hundida dentro de una card */
+--surface-rail:     var(--gray-200);  /* navegación lateral */
+--surface-raised:   var(--white);     /* tarjeta, modal, campo */
+--surface-brand:    var(--color-brand);
+--surface-disabled: var(--gray-300);
+
+/* Texto — 4 niveles de énfasis, nunca más */
+--text-primary:  var(--gray-900);
+--text-secondary: var(--gray-800);
+--text-muted:    var(--gray-700);
+--text-subtle:   var(--gray-650);
+--text-disabled: var(--gray-600);
+--text-link:     var(--color-brand-dark);
+--text-inverse:  var(--white);
+
+/* Bordes */
+--border-default: var(--gray-400);
+--border-subtle:  var(--gray-200);
+--border-strong:  var(--color-brand);
+--border-focus:   var(--blue-focus);
+
+/* Feedback */
+--feedback-danger-bg: var(--red-100);
+--feedback-danger-text: var(--red-600);
+--feedback-success-bg: var(--green-100);
+--feedback-success-text: var(--green-700);
+--feedback-warning-bg: #fff3cd;
+--feedback-warning-text: #664d03;</code></pre><hr/><h2>2. Tipografía</h2><p><strong>Familia:</strong> una sola familia variable con pesos numéricos (el original usa "Gilroy", geométrica sans-serif tipo Poppins/Montserrat/Circular). Si el proyecto destino no tiene esa fuente, elegir cualquier geométrica sans de peso similar — <strong>lo que importa es tener 4 pesos disponibles</strong>, no la fuente exacta.</p><pre class="doc-code"><code class="lang-css">--font-family-base: 'Gilroy', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+--font-weight-regular:  400;
+--font-weight-medium:   500;  /* peso BASE del cuerpo de texto, no 400 */
+--font-weight-semibold: 600;  /* botones, headers de tabla, badges */
+--font-weight-bold:     700;  /* énfasis fuerte, títulos */</code></pre><p>Detalle no obvio: el cuerpo de texto usa <strong>500 (medium)</strong> como peso base, no 400. Da un trazo ligeramente más firme sin llegar a semibold — vale la pena replicarlo, es parte del "look" reconocible.</p><h3>Escala de tamaños (9 pasos, con uso)</h3><div class="doc-table-wrap"><table><thead><tr><th>Token</th><th>rem / px</th><th>Uso</th></tr></thead><tbody><tr><td><code>--text-3xs</code></td><td>0.6875rem / 11px</td><td>Label flotante ya subido (encima del campo)</td></tr><tr><td><code>--text-2xs</code></td><td>0.71rem / ~11px</td><td>Texto auxiliar mínimo</td></tr><tr><td><code>--text-xs</code></td><td>0.75rem / 12px</td><td>Referencias, footer, texto editable inline</td></tr><tr><td><code>--text-sm</code></td><td>0.875rem / 14px</td><td>Inputs, ítems de dropdown, valores de resumen</td></tr><tr><td><code>--text-md</code></td><td>0.9375rem / 15px</td><td>Saludo/texto de header</td></tr><tr><td><code>--text-base</code></td><td>1rem / 16px</td><td>Botones, cuerpo de texto por defecto</td></tr><tr><td><code>--text-lg</code></td><td>1.25rem / 20px</td><td>Subtítulos</td></tr><tr><td><code>--text-xl</code></td><td>1.375rem / 22px</td><td>Título de modal</td></tr><tr><td><code>--text-2xl</code></td><td>1.5rem / 24px</td><td>Título de página</td></tr></tbody></table></div><p>Interlineado: <code>tight</code> 1.2 (títulos), <code>snug</code> 1.25 (botones, UI compacta), <code>normal</code> 1.5 (cuerpo de texto largo).</p><hr/><h2>3. Escalas dimensionales</h2><h3>Espaciado — base 4px</h3><pre class="doc-code"><code class="lang-css">--space-1: 0.25rem;  /* 4px  — gap mínimo (ícono + texto) */
+--space-2: 0.5rem;   /* 8px  — gap entre elementos relacionados */
+--space-3: 0.75rem;  /* 12px — padding interno de card chica */
+--space-4: 1rem;     /* 16px — padding estándar */
+--space-5: 1.25rem;  /* 20px */
+--space-6: 1.5rem;   /* 24px — separación entre secciones */
+--space-8: 2rem;     /* 32px */
+--space-10: 2.5rem;  /* 40px */
+--space-12: 3rem;    /* 48px — separación grande / alto mínimo de banner */</code></pre><p>Todo espaciado sale de esta escala. Ningún <code>padding: 13px</code> suelto.</p><h3>Radios — 9 pasos, de "casi recto" a "circular"</h3><pre class="doc-code"><code class="lang-css">--radius-hairline: 1px;   /* casi sin redondeo, uso muy puntual */
+--radius-xs: 5px;         /* inputs, tab superior */
+--radius-sm: 6px;         /* mensajes de error, pills de label pequeñas */
+--radius-md: 10px;        /* filas de tabla, cards internas */
+--radius-lg: 15px;        /* mapas, bloques grandes */
+--radius-xl: 25px;        /* modales, botones (redondeo "pill" visible pero no total) */
+--radius-2xl: 30px;       /* bloques de acceso/login */
+--radius-pill: 32px;      /* badges */
+--radius-full: 50%;       /* círculos (avatar, dot de stepper) */</code></pre><p>Lectura de jerarquía: <strong>radio chico (5–10px) = elemento funcional/denso</strong> (input, fila de tabla). <strong>Radio grande (25px+) = contenedor destacado</strong> (modal, botón, tarjeta de acceso). El salto de 10px a 25px es deliberado — no hay un paso intermedio de "15px genérico" para componentes cotidianos.</p><h3>Bordes y sombras</h3><pre class="doc-code"><code class="lang-css">--border-width-thin: 1px;    /* default: inputs, cards */
+--border-width-base: 2px;    /* botones, tabs */
+--border-width-thick: 3px;   /* subrayado de botón terciario */
+--border-width-strong: 4px;  /* conector de stepper */
+
+--shadow-row: 0 2px 2px 1px rgba(195, 195, 195, 0.25);   /* elevación mínima: fila, card */
+--shadow-dropdown: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);    /* dropdown, modal */
+--shadow-inset-active: inset 0 3px 5px rgba(0, 0, 0, 0.125); /* botón presionado */</code></pre><p>Sólo 2 niveles reales de elevación (<code>row</code> y <code>dropdown/modal</code>) — no hay una escala de sombras de 5 pasos. Evitar sobre-diseñar esa parte al portar.</p><h3>Transiciones</h3><pre class="doc-code"><code class="lang-css">--transition-fast: 0.2s ease-out;
+--transition-base: 0.2s ease-in-out;</code></pre><p>Todo (hover de botón, apertura de acordeón, cambio de tab) usa 200ms. Nada más lento — la UI se siente "inmediata" a propósito.</p><hr/><h2>4. Botones — anatomía completa</h2><p>Es el componente con más criterio de diseño explícito, vale la pena portarlo entero.</p><h3>Estructura base (aplica a toda variante/tamaño)</h3><pre class="doc-code"><code class="lang-css">.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;                 /* --button-height */
+  padding: 0.5rem 1.2rem;           /* y x — nunca simétrico */
+  border: 2px solid transparent;    /* grosor reservado SIEMPRE, aunque no se vea */
+  border-radius: 25px;              /* --radius-xl */
+  font-size: 1rem;                  /* --text-base */
+  font-weight: 600;                 /* --font-weight-semibold, no bold */
+  line-height: 1.25;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out;
+}
+.button:active:not(:disabled) {
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125); /* feedback de presión, sin mover el botón */
+}</code></pre><p>Detalle clave: el <code>border</code> está <strong>siempre presente a 2px, transparente si no se usa</strong> — así ningún botón cambia de tamaño al pasar de una variante con borde visible a una sin borde. Evita el "salto" clásico de layout en hover.</p><h3>Variantes (jerarquía de 4 niveles)</h3><div class="doc-table-wrap"><table><thead><tr><th>Variante</th><th>Fondo</th><th>Texto</th><th>Borde</th><th>Cuándo usarla</th></tr></thead><tbody><tr><td><strong>Primary</strong></td><td>marca sólido</td><td>contraste de marca</td><td>marca</td><td>1 por pantalla — la acción principal</td></tr><tr><td><strong>Secondary</strong></td><td>blanco</td><td>contraste de marca</td><td>marca</td><td>Acción alternativa, mismo peso visual que primary pero "vacía"</td></tr><tr><td><strong>Tertiary</strong></td><td>transparente</td><td>contraste de marca</td><td>sólo <code>border-bottom</code> 3px</td><td>Acción de bajo compromiso, visualmente más liviana</td></tr><tr><td><strong>Link</strong></td><td>transparente</td><td>color de link</td><td>ninguno</td><td>Navegación / acción inline dentro de texto</td></tr></tbody></table></div><pre class="doc-code"><code class="lang-css">/* Primary */
+.btn-primary { background: var(--color-brand); color: var(--color-brand-contrast); border-color: var(--color-brand); }
+.btn-primary:hover  { background: rgba(255,206,0,0.6); color: rgba(21,38,99,0.8); }
+.btn-primary:disabled { background: var(--gray-300); color: var(--gray-600); border-color: var(--gray-300); }
+
+/* Secondary */
+.btn-secondary { background: var(--white); color: var(--color-brand-contrast); border-color: var(--color-brand); }
+.btn-secondary:hover { border-color: rgba(255,206,0,0.6); }
+
+/* Tertiary — SIN border-radius, sólo subrayado */
+.btn-tertiary {
+  background: transparent; color: var(--color-brand-contrast);
+  border: none; border-bottom: 3px solid var(--color-brand);
+  border-radius: 0; padding-inline: 0.9rem;
+}
+
+/* Link */
+.btn-link { background: transparent; color: var(--text-link); border: none; min-height: auto; padding: 0 0.7rem; }
+.btn-link:hover { text-decoration: underline; }</code></pre><p>Regla de hover consistente en las 3 variantes con fondo: **el hover siempre baja la opacidad del color de marca al ~60%** (<code>rgba(255,206,0,0.6)</code>), nunca usa un color de hover distinto. Es un solo patrón, no cuatro.</p><h3>Tamaños</h3><div class="doc-table-wrap"><table><thead><tr><th>Tamaño</th><th>Alto</th><th>Uso</th></tr></thead><tbody><tr><td><code>sm</code></td><td>32px, padding <code>4px 12px</code>, texto 14px</td><td>Acciones secundarias en espacios chicos</td></tr><tr><td><code>md</code> (default)</td><td>44px</td><td>Estándar</td></tr><tr><td>ancho fijo 124px</td><td>alto default</td><td>Botones "Atrás/Siguiente" de wizard — <strong>ancho fijo, no por contenido</strong>, para que no salten de tamaño entre pasos</td></tr></tbody></table></div><h3>Forma</h3><p>Por defecto el botón es <strong>pill</strong> (<code>border-radius</code> propio en las 4 esquinas). Existe una variante <strong>square</strong> (<code>border-radius: 0</code>) para cuando el redondeo lo aporta un contenedor externo que recorta con <code>overflow: hidden</code> — por ejemplo un botón "Pagar" pegado al fondo de una tarjeta, donde sólo las esquinas inferiores de la tarjeta (no del botón) están redondeadas. Vale la pena portar esta idea: **el redondeo lo decide quién es el borde visual real**, no siempre el propio botón.</p><hr/><h2>5. Campos de formulario</h2><pre class="doc-code"><code class="lang-css">--field-height: 38px;
+--field-padding: 10px;
+--field-font-size: 0.875rem;   /* --text-sm */
+--field-radius: 5px;           /* --radius-xs — más chico que el de un botón */
+--field-bg: var(--surface-raised);
+--field-border: 1px solid var(--border-default);
+--field-border-focus: 1px solid var(--blue-focus); /* azul de foco, DISTINTO del azul de marca */
+--field-text: var(--gray-900);</code></pre><p>Patrón de <strong>label flotante</strong>: reposa centrado verticalmente dentro del campo cuando está vacío; al enfocar o tener valor, sube y se achica (<code>0.875rem</code> → <code>0.6875rem</code>), cambiando de color atenuado a azul de foco. El "notch" que corta el borde del campo donde se posa el label necesita un fondo sólido detrás del texto (blanco sobre tarjeta; degradado de dos colores si el campo está sobre el fondo gris de página, para que la mitad de arriba del label matchee el fondo de página y la de abajo el campo).</p><hr/><h2>6. Otros componentes de referencia</h2><p>Útiles como banco de medidas al construir un componente nuevo con "el mismo aire":</p><pre class="doc-code"><code class="lang-css">/* Chrome de aplicación */
+--header-height: 60px;
+--sidebar-rail-width: 61px;      /* barra angosta con sólo íconos */
+--sidebar-drawer-width: 340px;   /* drawer expandido en mobile */
+--avatar-size: 40px;
+--icon-size-ui: 24px;            /* íconos utilitarios */
+--icon-size-nav: 30px;           /* íconos de navegación lateral, más grandes a propósito */
+
+/* Badge */
+--badge-padding: 0.25rem 0.625rem;
+--badge-radius: 32px;            /* --radius-pill */
+--badge-font-size: 0.75rem;
+--badge-font-weight: 600;
+
+/* Tabs */
+--tab-border-width: 2px;         /* subrayado del tab activo */
+--tab-radius: 5px 5px 0 0;       /* sólo esquinas superiores */
+
+/* Tabla */
+--table-row-gap: 5px;            /* filas SEPARADAS, no un bloque continuo con líneas divisorias */
+--table-radius: 10px;
+
+/* Modal */
+--modal-radius: 25px;
+--modal-width-sm: 300px;
+--modal-width-md: 500px;
+--modal-width-lg: 800px;</code></pre><p>Dos decisiones estructurales que vale la pena replicar aunque no se copien los números exactos:</p><ol><li>**Las filas de tabla van separadas por <code>gap</code>, con radio y sombra propios cada</li></ol><p>   una** (<code>--table-row-gap</code> + <code>--table-radius</code> + <code>--shadow-row</code>) — no es una tabla    con líneas divisorias, es una lista de "tarjetas fila".</p><ol><li><strong>El ícono de navegación lateral es más grande que el ícono de UI genérico</strong></li></ol><p>   (30px vs. 24px) — la navegación se trata como un elemento de mayor jerarquía    visual, no como un ícono utilitario más.</p><hr/><h2>7. Bloque CSS listo para copiar</h2><p>Variables mínimas para arrancar un proyecto nuevo con este mismo lenguaje visual. Reemplazar <code>--color-brand</code> / <code>--color-brand-dark</code> por la paleta real del proyecto destino — todo lo demás (estructura de capas, escalas, radios) es reusable tal cual.</p><pre class="doc-code"><code class="lang-css">:root {
+  /* Marca — reemplazar por la paleta del proyecto destino */
+  --color-brand: #ffce00;
+  --color-brand-dark: #152663;
+
+  /* Grises */
+  --gray-50: #fafafa;
+  --gray-100: #f2f2f2;
+  --gray-200: #eeeeee;
+  --gray-300: #d9d9d9;
+  --gray-400: #cccccc;
+  --gray-600: #8a8a8a;
+  --gray-700: #49454f;
+  --gray-900: #191919;
+  --white: #ffffff;
+
+  /* Semántico */
+  --surface-page: var(--gray-50);
+  --surface-raised: var(--white);
+  --surface-sunken: var(--gray-100);
+  --text-primary: var(--gray-900);
+  --text-muted: var(--gray-700);
+  --text-disabled: var(--gray-600);
+  --border-default: var(--gray-400);
+
+  /* Tipografía */
+  --font-family-base: 'Gilroy', system-ui, sans-serif;
+  --font-weight-base: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.375rem;
+
+  /* Espaciado */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* Radios */
+  --radius-xs: 5px;
+  --radius-md: 10px;
+  --radius-xl: 25px;
+  --radius-pill: 32px;
+  --radius-full: 50%;
+
+  /* Bordes y sombras */
+  --border-width-base: 2px;
+  --shadow-row: 0 2px 2px 1px rgba(195, 195, 195, 0.25);
+  --shadow-dropdown: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+  /* Movimiento */
+  --transition-base: 0.2s ease-in-out;
+
+  /* Botón — anatomía de referencia */
+  --button-height: 44px;
+  --button-padding-x: 1.2rem;
+  --button-padding-y: 0.5rem;
+  --button-radius: var(--radius-xl);
+  --button-font-weight: var(--font-weight-semibold);
+}</code></pre><hr/><p><strong>Fuente:</strong> extraído de <a href="../src/styles/tokens.css"><code>src/styles/tokens.css</code></a> y <a href="../src/shared/ui/Button"><code>src/shared/ui/Button</code></a> de este proyecto (MiCorreo / Correo Argentino), 2026-08-18. Pensado como punto de partida — no como copia literal — para un proyecto HTML distinto.</p>
+    </article>
+  </main>
+
+  <footer class="hub-footer">Sistema CSAT · Documentación funcional · Correo Argentino</footer>
+
+</body>
+</html>
