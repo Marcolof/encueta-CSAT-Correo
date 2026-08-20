@@ -278,6 +278,53 @@
   <link rel="stylesheet" href="components/tabs.css" />
   <link rel="stylesheet" href="components/pagination.css" />
   <link rel="stylesheet" href="components/footer.css" />
+  <style>
+    .back-to-hub {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 2000;
+      display: inline-flex;
+      align-items: center;
+      height: 44px;
+      padding-right: 0;
+      border-radius: 999px;
+      background: var(--color-brand-dark, #152663);
+      color: #fff;
+      text-decoration: none;
+      box-shadow: 0 6px 18px rgba(21, 38, 99, .3);
+      opacity: .82;
+      transition: opacity .2s ease, box-shadow .2s ease, transform .2s ease, padding-right .2s ease;
+    }
+    .back-to-hub:hover, .back-to-hub:focus-visible {
+      opacity: 1;
+      box-shadow: 0 10px 22px rgba(21, 38, 99, .4);
+      transform: translateY(-2px);
+      padding-right: 14px;
+    }
+    .back-to-hub__icon {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+    }
+    .back-to-hub__icon svg { width: 20px; height: 20px; stroke: currentColor; }
+    .back-to-hub__label {
+      max-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      font-family: var(--font-family-base, inherit);
+      font-size: .8125rem;
+      font-weight: 700;
+      transition: max-width .25s ease;
+    }
+    .back-to-hub:hover .back-to-hub__label, .back-to-hub:focus-visible .back-to-hub__label { max-width: 140px; }
+    @media (max-width: 600px) {
+      .back-to-hub { right: 14px; bottom: 14px; height: 40px; }
+      .back-to-hub__icon { width: 40px; height: 40px; }
+    }
+  </style>
 </head>
 <body>
 
@@ -927,6 +974,13 @@
       </div>
     </div>
   </div>
+
+  <a class="back-to-hub" href="../index.html" title="Volver al hub" aria-label="Volver al hub">
+    <span class="back-to-hub__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+    </span>
+    <span class="back-to-hub__label">Volver al hub</span>
+  </a>
 
   <script src="components/index.js"></script>
   <script>
