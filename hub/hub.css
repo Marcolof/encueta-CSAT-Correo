@@ -9,6 +9,9 @@ body.hub-body {
   font-family: var(--font-family-base);
   font-weight: var(--font-weight-min);
   font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   color: var(--text-primary);
   background: var(--global-bg);
   font-size: 14px;

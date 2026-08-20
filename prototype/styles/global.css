@@ -2,7 +2,7 @@
 @font-face{font-family:"Gilroy";src:url("../assets/fonts/Gilroy-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
 @font-face{font-family:"Gilroy";src:url("../assets/fonts/Gilroy-Heavy.ttf") format("truetype");font-weight:800 900;font-display:swap}
 html{background:var(--global-bg)}
-body{margin:0;font-family:var(--font-family-base);font-weight:var(--font-weight-min);font-synthesis:none;color:#111827;background:var(--global-bg);font-size:14px;line-height:1.5}
+body{margin:0;font-family:var(--font-family-base);font-weight:var(--font-weight-min);font-synthesis:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;color:#111827;background:var(--global-bg);font-size:14px;line-height:1.5}
 button,input,select,textarea{font-family:inherit;font-weight:var(--font-weight-min)}
 h1,h2,h3,p{margin-top:0}
 h1,h2,h3{color:#111827;line-height:1.2}
