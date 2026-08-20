@@ -10,7 +10,6 @@
 <style>
   html, body.hub-body { height: 100%; }
   body.hub-body { display: flex; flex-direction: column; overflow: hidden; }
-  .hub-header { flex: 0 0 auto; }
 
   .deck-stage {
     flex: 1 1 auto;
@@ -18,9 +17,38 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 22px 48px;
+    padding: 14px 20px;
   }
-  .deck { max-width: 1180px; width: 100%; height: 100%; position: relative; margin: 0 auto; }
+  .deck { max-width: 1360px; width: 100%; height: 100%; position: relative; margin: 0 auto; }
+
+  /* Botón volver al hub — integrado en cada slide en vez de un header aparte */
+  .slide-back {
+    display: inline-flex; align-items: center; gap: 8px; flex: 0 0 auto;
+    padding: .5rem 1rem; border-radius: var(--radius-pill); border: 0;
+    font-family: var(--font-family-base); font-size: .9375rem; font-weight: 700;
+    text-decoration: none; white-space: nowrap;
+    transition: opacity var(--transition-base), transform var(--transition-base);
+  }
+  .slide-back:hover { opacity: .82; }
+  .slide-back .lucide-icon { width: 16px; height: 16px; }
+
+  /* Sobre fondo navy (portadas / contenido claro): pill blanca, texto navy */
+  .slide-back--light {
+    position: absolute; top: 20px; right: 20px; z-index: 5;
+    background: #fff; color: var(--color-brand-dark);
+    box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  }
+  .cover-slide .slide-back--light { background: rgba(255,255,255,.95); }
+
+  /* Dentro de la banda amarilla de las capturas: pill navy, texto blanco */
+  .slide-back--band { margin-left: auto; background: var(--color-brand-dark); color: #fff; }
+
+  /* Sobre fondo blanco (slides de contenido plano): pill con borde */
+  .slide-back--outline {
+    position: absolute; top: 20px; right: 20px; z-index: 5;
+    background: #fff; color: var(--color-brand-dark); border: 1px solid var(--border-card);
+  }
+  .slide-back--outline:hover { background: var(--gray-100); opacity: 1; }
   .slide {
     display: none;
     position: relative;
@@ -35,7 +63,7 @@
     overflow-y: auto;
     box-sizing: border-box;
   }
-  .slide.is-active { display: flex; flex-direction: column; justify-content: center; }
+  .slide.is-active { display: flex; flex-direction: column; justify-content: flex-start; }
 
   .deck-nav {
     flex: 0 0 auto;
@@ -68,122 +96,142 @@
   @media (max-width: 900px) {
     .deck-stage { padding: 14px 16px; }
     .slide { padding: 28px 22px; border-radius: var(--radius-md); }
+    .slide:not(.cover-slide):not(.screen-slide-wrap) { padding-top: 68px; }
     .deck-nav { gap: 12px; padding: 12px 14px; }
     .deck-nav__btn span.btn-label { display: none; }
   }
   .slide--dark { background: var(--color-brand-dark); color: #fff; border-color: var(--color-brand-dark); }
   .slide--dark .muted { color: #aeb7d0; }
   .slide--dark h1, .slide--dark h2, .slide--dark h3 { color: #fff; }
-  .slide--brand { background: var(--color-brand); border-color: var(--color-brand); }
 
-  .slide-eyebrow { display: inline-flex; align-items:center; gap:8px; margin-bottom: 12px; padding: 4px 12px; border-radius: var(--radius-pill); background: var(--gray-100); color: var(--color-brand-dark); font-size: .6875rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+  .slide-eyebrow { display: inline-flex; align-items:center; gap:8px; margin-bottom: 12px; padding: 5px 14px; border-radius: var(--radius-pill); background: var(--gray-100); color: var(--color-brand-dark); font-size: .8125rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
   .slide--dark .slide-eyebrow { background: rgba(255,255,255,.12); color: var(--color-brand); }
-  .slide--brand .slide-eyebrow { background: rgba(21,38,99,.1); color: var(--color-brand-dark); }
 
-  .slide h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 10px; }
-  .slide h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
-  .slide p { color: var(--text-muted); max-width: 720px; }
+  .slide h2 { font-size: 1.85rem; font-weight: 700; margin-bottom: 10px; }
+  .slide h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+  .slide p { color: var(--text-muted); max-width: 720px; font-size: 1rem; }
   .slide--dark p { color: #cfd6ea; }
 
-  .crumb { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: .95rem; font-weight: 700; }
-  .crumb span:not(.crumb-sep) { padding: 6px 14px; border-radius: var(--radius-pill); background: rgba(255,255,255,.12); }
+  .crumb { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 1.0625rem; font-weight: 700; }
+  .crumb span:not(.crumb-sep) { padding: 6px 14px; border-radius: var(--radius-pill); background: rgba(255,255,255,.12); color: #fff; }
   .crumb-sep { color: var(--color-brand); opacity: .8; }
-  .slide:not(.slide--dark) .crumb span:not(.crumb-sep) { background: var(--gray-100); color: var(--color-brand-dark); }
 
-  .title-slide { text-align: left; padding: 64px 56px; }
-  .title-slide h1 { font-size: 2.5rem; font-weight: 800; margin: 14px 0 10px; }
-  .title-slide .muted { font-size: 1rem; margin-bottom: 30px; }
+  /* Portadas / dividers — banda azul marino con barra amarilla lateral (formato de referencia) */
+  .cover-slide { padding: 0; background: var(--color-brand-dark); border-color: var(--color-brand-dark); overflow: hidden; }
+  .cover-slide.is-active { flex-direction: row; align-items: stretch; justify-content: flex-start; }
+  .cover-slide__bar { flex: 0 0 16px; background: var(--color-brand); }
+  .cover-slide__content { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; justify-content: center; padding: 56px 64px; }
+  .cover-eyebrow { display: block; margin-bottom: 18px; color: var(--color-brand); font-size: .9375rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .cover-title { margin: 0 0 16px; font-size: 3rem; font-weight: 700; color: #fff; line-height: 1.15; }
+  .cover-slide p.cover-subtitle { margin: 0; max-width: 640px; font-size: 1.25rem; font-weight: 600; color: #c7d0ea; }
+  .cover-slide .crumb { margin-top: 30px; }
+  @media (max-width: 900px) {
+    .cover-slide__content { padding: 40px 28px; }
+    .cover-title { font-size: 2rem; }
+  }
 
   .obj-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; align-items: start; }
   .obj-list { display: flex; flex-direction: column; gap: 10px; }
-  .obj-list span { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-md); background: var(--gray-100); font-weight: 700; font-size: .875rem; color: var(--color-brand-dark); }
-  .obj-list span::before { content: "✓"; color: var(--color-success); font-weight: 800; }
+  .obj-list span { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-md); background: var(--gray-100); font-weight: 700; font-size: .9375rem; color: var(--color-brand-dark); }
+  .obj-list span::before { content: "✓"; color: var(--color-success); font-weight: 700; }
 
   .steps-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 18px; margin-top: 22px; }
   .step-card { padding: 20px; border-radius: var(--radius-md); background: var(--gray-100); }
-  .step-card b { display: inline-grid; place-items: center; width: 30px; height: 30px; margin-bottom: 12px; border-radius: 50%; background: var(--color-brand); color: var(--color-brand-dark); font-size: .9rem; }
-  .step-card strong { display: block; margin-bottom: 4px; font-size: .95rem; color: var(--text-primary); }
-  .step-card p { margin: 0; font-size: .8125rem; color: var(--text-muted); }
+  .step-card b { display: inline-grid; place-items: center; width: 30px; height: 30px; margin-bottom: 12px; border-radius: 50%; background: var(--color-brand); color: var(--color-brand-dark); font-size: 1rem; }
+  .step-card strong { display: block; margin-bottom: 4px; font-size: 1.0625rem; color: var(--text-primary); }
+  .step-card p { margin: 0; font-size: .9375rem; color: var(--text-muted); }
 
-  /* Slides tipo "PASO" con captura embebida */
-  .screen-slide { display: grid; grid-template-columns: 1fr 1.15fr; gap: 36px; align-items: center; }
-  .screen-slide.reverse { grid-template-columns: 1.15fr 1fr; }
+  /* Slides tipo "PASO" con captura embebida — banda superior amarilla/azul + texto angosto/captura grande */
+  .screen-slide-wrap { padding: 0; }
+  .screen-slide-wrap.is-active { flex-direction: column; justify-content: flex-start; }
+
+  .screen-topbar { flex: 0 0 auto; }
+  .screen-topbar__stripe { height: 6px; background: var(--color-brand-dark); }
+  .screen-topbar__band { display: flex; align-items: center; gap: 16px; height: 56px; padding: 0 40px; background: var(--color-brand); }
+  .screen-topbar__logo { height: 24px; width: auto; }
+  .screen-topbar__label { font-size: 1.1875rem; font-weight: 700; color: var(--color-brand-dark); }
+
+  .screen-slide-body { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; padding: 26px 40px; overflow-y: auto; }
+  .plain-body { flex: 1 1 auto; min-height: 0; padding: 32px 40px; overflow-y: auto; }
+  @media (max-width: 900px) { .plain-body { padding: 22px 20px; } }
+  .screen-slide-body .screen-slide { width: 100%; }
+
+  .screen-slide { display: grid; grid-template-columns: minmax(230px, 290px) 1fr; gap: 34px; align-items: center; }
+  .screen-slide.reverse { grid-template-columns: 1fr minmax(230px, 290px); }
   .screen-slide.reverse .screen-text { order: 2; }
   .screen-slide.reverse .screen-frame-wrap { order: 1; }
   .screen-slide > * { min-width: 0; }
-  .screen-text ul { margin: 14px 0 0; padding-left: 18px; color: var(--text-muted); font-size: .875rem; line-height: 1.85; }
+  .screen-text ul { margin: 14px 0 0; padding-left: 18px; color: var(--text-muted); font-size: .9375rem; line-height: 1.75; }
   .screen-text ul li strong { color: var(--text-primary); }
+  .screen-text h2 { font-size: 1.45rem; }
+  .screen-text p { font-size: .9375rem; }
 
-  .role-tag { display:inline-flex; align-items:center; gap:6px; margin-top:18px; padding: 5px 12px; border-radius: var(--radius-pill); font-size:.75rem; font-weight:700; }
+  .role-tag { display:inline-flex; align-items:center; gap:6px; margin-top:16px; padding: 5px 12px; border-radius: var(--radius-pill); font-size:.875rem; font-weight:700; }
   .role-tag--operador { background:#e7edfb; color:#2563d9; }
   .role-tag--controlador { background:#e5f6fc; color:#0f9ed5; }
   .role-tag--admin { background:#f6e8f4; color:#a02b93; }
 
-  .screen-frame-wrap { display: flex; justify-content: center; min-width: 0; }
+  .screen-frame-wrap { display: flex; justify-content: center; min-width: 0; width: 100%; }
   .screen-frame {
-    width: 560px; height: 350px; max-width: 100%;
+    width: 100%; max-width: 980px; max-height: 613px; aspect-ratio: 1440 / 900;
     border-radius: var(--radius-md);
     border: 6px solid var(--gray-900);
     background: #fff;
     overflow: hidden;
     box-shadow: 0 18px 40px rgba(21,38,99,.18);
-    flex: 0 0 auto;
   }
-  .screen-frame iframe { width: 1440px; height: 900px; transform: scale(0.3889); transform-origin: top left; border: 0; pointer-events: none; }
-
-  .divider-slide { text-align: center; padding: 70px 40px; }
-  .divider-slide .slide-eyebrow { margin-bottom: 18px; }
-  .divider-slide h2 { font-size: 2rem; }
+  .screen-frame iframe { width: 1440px; height: 900px; transform: scale(var(--frame-scale, .5556)); transform-origin: top left; border: 0; pointer-events: none; }
 
   .module-list { display:flex; flex-direction:column; gap:14px; margin-top:20px; }
   .module-item { display:flex; gap:14px; align-items:flex-start; padding:16px; border-radius:var(--radius-md); background:var(--gray-100); }
   .module-item .lucide-icon { width:22px; height:22px; color:var(--color-brand-dark); flex:0 0 auto; margin-top:2px; }
-  .module-item strong { display:block; margin-bottom:3px; font-size:.9rem; }
-  .module-item p { margin:0; font-size:.8125rem; color:var(--text-muted); }
-
-  .end-slide { text-align: center; padding: 70px 40px; }
+  .module-item strong { display:block; margin-bottom:3px; font-size:1.0625rem; }
+  .module-item p { margin:0; font-size:.9375rem; color:var(--text-muted); }
 
   @media (max-width: 900px) {
     .deck { padding: 0 20px 60px; }
     .obj-grid, .screen-slide, .screen-slide.reverse { grid-template-columns: 1fr; }
     .screen-slide.reverse .screen-text, .screen-slide.reverse .screen-frame-wrap { order: initial; }
-    .screen-frame { width: 100%; max-width: 560px; height: 62vw; max-height: 350px; }
+    .screen-topbar__band { padding: 0 20px; height: 48px; }
+    .screen-slide-body { padding: 18px 20px; }
+    .screen-frame { max-height: 44vh; }
   }
 </style>
 </head>
 <body class="hub-body">
 
-  <header class="hub-header">
-    <div class="hub-header__brand">
-      <img src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
-      <div class="hub-header__divider"></div>
-      <div class="hub-header__title">Presentación<small>Instructivo de navegación del flujo · Backoffice CSAT</small></div>
-    </div>
-    <a class="hub-header__back" href="../index.html">
-      <svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      Volver al hub
-    </a>
-  </header>
-
   <main class="deck-stage">
    <div class="deck" id="deck">
 
     <!-- 1. TÍTULO -->
-    <section class="slide slide--brand title-slide">
-      <span class="slide-eyebrow">Sistema CSAT · Backoffice</span>
-      <h1>Operativos de encuesta CSAT</h1>
-      <p class="muted" style="color:#1b2a56;">Instructivo de navegación del flujo — de la creación de un operativo a su cierre.</p>
-      <div class="crumb">
-        <span>Crear</span><span class="crumb-sep">›</span>
-        <span>Configurar</span><span class="crumb-sep">›</span>
-        <span>Lanzar</span><span class="crumb-sep">›</span>
-        <span>Seguimiento</span><span class="crumb-sep">›</span>
-        <span>Finalizar</span>
+    <section class="slide cover-slide">
+      <a class="slide-back slide-back--light" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+      <div class="cover-slide__bar"></div>
+      <div class="cover-slide__content">
+        <span class="cover-eyebrow">Sistema CSAT · Backoffice</span>
+        <h1 class="cover-title">Operativos de encuesta CSAT</h1>
+        <p class="cover-subtitle">Instructivo de navegación del flujo — de la creación de un operativo a su cierre.</p>
+        <div class="crumb">
+          <span>Crear</span><span class="crumb-sep">›</span>
+          <span>Configurar</span><span class="crumb-sep">›</span>
+          <span>Lanzar</span><span class="crumb-sep">›</span>
+          <span>Seguimiento</span><span class="crumb-sep">›</span>
+          <span>Finalizar</span>
+        </div>
       </div>
     </section>
 
     <!-- 2. OBJETIVO -->
-    <section class="slide">
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Objetivo</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="plain-body">
       <span class="slide-eyebrow">Objetivo de la presentación</span>
       <div class="obj-grid">
         <div>
@@ -198,10 +246,20 @@
           <span>Vista por rol (Controlador / Admin)</span>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- 3. EL RECORRIDO -->
-    <section class="slide">
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Recorrido</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="plain-body">
       <span class="slide-eyebrow">El recorrido de un operativo</span>
       <h2>Un operativo sigue siempre el mismo orden</h2>
       <p>Nace en Borrador, se configura, se lanza y eventualmente finaliza — por fecha programada o de forma manual.</p>
@@ -212,20 +270,34 @@
         <div class="step-card"><b>4</b><strong>Seguimiento</strong><p>Indicadores acumulados y ejecución del día.</p></div>
         <div class="step-card"><b>5</b><strong>Finalizar</strong><p>Automático por fecha o manual. Activo → Finalizado → Historial.</p></div>
       </div>
+      </div>
     </section>
 
     <!-- 4. DIVIDER PANTALLAS -->
-    <section class="slide slide--dark divider-slide">
-      <span class="slide-eyebrow">Pantallas</span>
-      <h2>Operativos CSAT — end to end del flujo</h2>
-      <p style="margin:0 auto;">Cada paso siguiente muestra la pantalla real del prototipo navegable.</p>
+    <section class="slide cover-slide">
+      <a class="slide-back slide-back--light" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+      <div class="cover-slide__bar"></div>
+      <div class="cover-slide__content">
+        <span class="cover-eyebrow">Pantallas</span>
+        <h1 class="cover-title">Operativos CSAT — end to end del flujo</h1>
+        <p class="cover-subtitle">Cada paso siguiente muestra la pantalla real del prototipo navegable.</p>
+      </div>
     </section>
 
     <!-- PASO: LOGIN -->
-    <section class="slide">
-      <span class="slide-eyebrow">Acceso</span>
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Login</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="screen-slide-body">
       <div class="screen-slide">
         <div class="screen-text">
+          <span class="slide-eyebrow">Acceso</span>
           <h2>Login de demostración</h2>
           <p>Punto de entrada al backoffice. Para el prototipo, el rol se selecciona libremente sin validar usuario ni contraseña.</p>
           <ul>
@@ -238,16 +310,26 @@
           <div class="screen-frame"><iframe src="../prototype/index.html" title="Login"></iframe></div>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- PASO 1: OPERATIVOS TODOS -->
-    <section class="slide">
-      <span class="slide-eyebrow">Paso 1 · Operativos</span>
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Operativos</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="screen-slide-body">
       <div class="screen-slide reverse">
         <div class="screen-frame-wrap">
           <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.todos" title="Operativos - Todos"></iframe></div>
         </div>
         <div class="screen-text">
+          <span class="slide-eyebrow">Paso 1 · Operativos</span>
           <h2>Vista de trabajo rápido: “Todos”</h2>
           <p>Punto de partida del Operador. Sin filtros; solo Activos y Borradores, hasta 3 por grupo.</p>
           <ul>
@@ -258,13 +340,23 @@
           <span class="role-tag role-tag--operador">Operador</span>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- PASO 2: CREAR MODAL -->
-    <section class="slide">
-      <span class="slide-eyebrow">Paso 2 · Creación</span>
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Operativos</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="screen-slide-body">
       <div class="screen-slide">
         <div class="screen-text">
+          <span class="slide-eyebrow">Paso 2 · Creación</span>
           <h2>Crear operativo</h2>
           <p>Modal simple con los tres únicos campos obligatorios para el alta inicial.</p>
           <ul>
@@ -278,16 +370,26 @@
           <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.crearModal" title="Crear operativo"></iframe></div>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- PASO 3: CONFIGURACIÓN BORRADOR -->
-    <section class="slide">
-      <span class="slide-eyebrow">Paso 3 · Configuración</span>
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Borrador</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="screen-slide-body">
       <div class="screen-slide reverse">
         <div class="screen-frame-wrap">
           <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.detalleBorrador" title="Detalle borrador incompleto"></iframe></div>
         </div>
         <div class="screen-text">
+          <span class="slide-eyebrow">Paso 3 · Configuración</span>
           <h2>Detalle del borrador</h2>
           <p>Cuatro bloques de configuración: datos generales, público y segmentación, muestreo y encuesta.</p>
           <ul>
@@ -298,13 +400,23 @@
           <span class="role-tag role-tag--operador">Operador</span>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- PASO 4: CONFIG COMPLETA / LANZAR -->
-    <section class="slide">
-      <span class="slide-eyebrow">Paso 4 · Lanzamiento</span>
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Borrador</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="screen-slide-body">
       <div class="screen-slide">
         <div class="screen-text">
+          <span class="slide-eyebrow">Paso 4 · Lanzamiento</span>
           <h2>Configuración completa → Lanzar</h2>
           <p>Con todos los campos obligatorios cargados, el aviso cambia y el botón se habilita.</p>
           <ul>
@@ -318,16 +430,26 @@
           <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.detalleBorrador.completo" title="Detalle borrador completo"></iframe></div>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- PASO 5: SEGUIMIENTO ACTIVO -->
-    <section class="slide">
-      <span class="slide-eyebrow">Paso 5 · Seguimiento</span>
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Activo</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="screen-slide-body">
       <div class="screen-slide reverse">
         <div class="screen-frame-wrap">
           <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.detalleActivo" title="Detalle activo"></iframe></div>
         </div>
         <div class="screen-text">
+          <span class="slide-eyebrow">Paso 5 · Seguimiento</span>
           <h2>Detalle de un operativo activo</h2>
           <p>Responde rápido a "¿está ejecutándose según lo previsto?" sin ser un dashboard de BI completo.</p>
           <ul>
@@ -338,13 +460,23 @@
           <span class="role-tag role-tag--operador">Operador</span>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- PASO 6: FINALIZAR MODAL -->
-    <section class="slide">
-      <span class="slide-eyebrow">Paso 6 · Finalización</span>
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Activo</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="screen-slide-body">
       <div class="screen-slide">
         <div class="screen-text">
+          <span class="slide-eyebrow">Paso 6 · Finalización</span>
           <h2>Finalizar operativo</h2>
           <p>Puede finalizar automáticamente por fecha programada, o manualmente desde este modal.</p>
           <ul>
@@ -358,16 +490,26 @@
           <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.finalizarModal" title="Finalizar operativo"></iframe></div>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- PASO 7: HISTORIAL / FINALIZADO -->
-    <section class="slide">
-      <span class="slide-eyebrow">Paso 7 · Historial</span>
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Historial</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="screen-slide-body">
       <div class="screen-slide reverse">
         <div class="screen-frame-wrap">
           <div class="screen-frame"><iframe src="../prototype/index.html?goto=operador.detalleFinal" title="Detalle finalizado"></iframe></div>
         </div>
         <div class="screen-text">
+          <span class="slide-eyebrow">Paso 7 · Historial</span>
           <h2>Operativo finalizado</h2>
           <p>El cierre no es el momento en que se "entregan" los resultados: solo detiene la producción de nuevos casos.</p>
           <ul>
@@ -378,18 +520,33 @@
           <span class="role-tag role-tag--operador">Operador</span>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- MÓDULO: CONTROLADOR -->
-    <section class="slide slide--dark divider-slide">
-      <span class="slide-eyebrow">Módulo</span>
-      <h2>Vista Controlador — solo lectura</h2>
-      <p style="margin:0 auto;">Mismas pantallas que el Operador, con la gestión deshabilitada.</p>
+    <section class="slide cover-slide">
+      <a class="slide-back slide-back--light" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+      <div class="cover-slide__bar"></div>
+      <div class="cover-slide__content">
+        <span class="cover-eyebrow">Módulo</span>
+        <h1 class="cover-title">Vista Controlador — solo lectura</h1>
+        <p class="cover-subtitle">Mismas pantallas que el Operador, con la gestión deshabilitada.</p>
+      </div>
     </section>
 
-    <section class="slide">
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Borrador</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="screen-slide-body">
       <div class="screen-slide">
         <div class="screen-text">
+          <span class="slide-eyebrow">Vista Controlador</span>
           <h2>Consulta sin edición</h2>
           <p>El Controlador puede navegar todo, pero no puede modificar nada.</p>
           <ul>
@@ -404,21 +561,36 @@
           <div class="screen-frame"><iframe src="../prototype/index.html?goto=controlador.detalleBorrador.completo" title="Detalle borrador - Controlador"></iframe></div>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- MÓDULO: ADMIN -->
-    <section class="slide slide--dark divider-slide">
-      <span class="slide-eyebrow">Módulo</span>
-      <h2>Usuarios y roles — perfil Admin</h2>
-      <p style="margin:0 auto;">Propuesta UX para representar autenticación, acceso y permisos.</p>
+    <section class="slide cover-slide">
+      <a class="slide-back slide-back--light" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+      <div class="cover-slide__bar"></div>
+      <div class="cover-slide__content">
+        <span class="cover-eyebrow">Módulo</span>
+        <h1 class="cover-title">Usuarios y roles — perfil Admin</h1>
+        <p class="cover-subtitle">Propuesta UX para representar autenticación, acceso y permisos.</p>
+      </div>
     </section>
 
-    <section class="slide">
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Usuarios</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="screen-slide-body">
       <div class="screen-slide reverse">
         <div class="screen-frame-wrap">
           <div class="screen-frame"><iframe src="../prototype/index.html?goto=admin.usuarios" title="Usuarios y roles"></iframe></div>
         </div>
         <div class="screen-text">
+          <span class="slide-eyebrow">Perfil Admin</span>
           <h2>Gestión de usuarios</h2>
           <p>Única sección disponible para el rol Admin.</p>
           <ul>
@@ -429,10 +601,20 @@
           <span class="role-tag role-tag--admin">Admin</span>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- INTEGRACIONES -->
-    <section class="slide">
+    <section class="slide screen-slide-wrap">
+      <div class="screen-topbar">
+        <div class="screen-topbar__stripe"></div>
+        <div class="screen-topbar__band">
+          <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+          <span class="screen-topbar__label">Integraciones</span>
+          <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+        </div>
+      </div>
+      <div class="plain-body">
       <span class="slide-eyebrow">Detrás de escena</span>
       <h2>Lo que el usuario no necesita ver</h2>
       <p>La interfaz trabaja con conceptos de negocio; estas integraciones quedan ocultas.</p>
@@ -454,20 +636,25 @@
           <div><strong>Analytics / Clixsense</strong><p>Consumo periódico de resultados persistidos. No depende de finalizar el operativo.</p></div>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- FIN -->
-    <section class="slide slide--brand end-slide">
-      <span class="slide-eyebrow">Fin del recorrido</span>
-      <h2 style="color:var(--color-brand-dark);">Un operativo completo sigue siempre el mismo orden</h2>
-      <div class="crumb" style="justify-content:center; margin-top:16px;">
-        <span>Crear</span><span class="crumb-sep">›</span>
-        <span>Configurar</span><span class="crumb-sep">›</span>
-        <span>Lanzar</span><span class="crumb-sep">›</span>
-        <span>Seguimiento</span><span class="crumb-sep">›</span>
-        <span>Finalizar</span>
+    <section class="slide cover-slide">
+      <a class="slide-back slide-back--light" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
+      <div class="cover-slide__bar"></div>
+      <div class="cover-slide__content">
+        <span class="cover-eyebrow">Fin del recorrido</span>
+        <h1 class="cover-title">Un operativo completo sigue siempre el mismo orden</h1>
+        <div class="crumb">
+          <span>Crear</span><span class="crumb-sep">›</span>
+          <span>Configurar</span><span class="crumb-sep">›</span>
+          <span>Lanzar</span><span class="crumb-sep">›</span>
+          <span>Seguimiento</span><span class="crumb-sep">›</span>
+          <span>Finalizar</span>
+        </div>
+        <p class="cover-subtitle" style="margin-top:22px;">Instructivo de navegación · Sistema CSAT — Backoffice · Correo Argentino</p>
       </div>
-      <p style="margin:22px auto 0; color:#1b2a56;">Instructivo de navegación · Sistema CSAT — Backoffice · Correo Argentino</p>
     </section>
 
    </div>
@@ -499,6 +686,20 @@
 
       let index = Math.min(Math.max(parseInt((location.hash || '').replace('#', ''), 10) - 1 || 0, 0), total - 1);
 
+      function syncFrameScale() {
+        const active = slides[index];
+        active.querySelectorAll('.screen-frame').forEach(frame => {
+          const iframe = frame.querySelector('iframe');
+          if (!iframe || !frame.offsetWidth) return;
+          const scale = frame.offsetWidth / 1440;
+          iframe.style.transform = 'scale(' + scale + ')';
+        });
+      }
+      function scheduleFrameSync() {
+        requestAnimationFrame(() => requestAnimationFrame(syncFrameScale));
+        setTimeout(syncFrameScale, 60);
+      }
+
       function render() {
         slides.forEach((s, i) => s.classList.toggle('is-active', i === index));
         currentEl.textContent = index + 1;
@@ -507,7 +708,10 @@
         progressBar.style.width = ((index + 1) / total * 100) + '%';
         history.replaceState(null, '', '#' + (index + 1));
         slides[index].scrollTop = 0;
+        scheduleFrameSync();
       }
+
+      window.addEventListener('resize', () => scheduleFrameSync());
 
       function go(delta) {
         const next = index + delta;
