@@ -60,6 +60,6 @@
   --shadow-row: 0 2px 2px 1px rgba(195, 195, 195, .25);
   --shadow-dropdown: 0 .5rem 1rem rgba(0, 0, 0, .15);
   --shadow-card: 0 2px 8px rgba(21, 38, 99, .04);
-  --sidebar-width: 260px;
+  --sidebar-width: 312px;
   --transition-base: .2s ease-in-out;
 }

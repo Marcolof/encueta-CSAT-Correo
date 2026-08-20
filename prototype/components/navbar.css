@@ -1,13 +1,13 @@
-.ui-sidebar { position:sticky;top:0;display:flex;flex-direction:column;height:100vh;padding:30px 22px 22px;border:0;background:var(--color-brand-dark);color:#fff; }
+.ui-sidebar { position:sticky;top:16px;display:flex;flex-direction:column;height:calc(100vh - 32px);margin:16px;padding:30px 22px 22px;border:0;border-radius:var(--radius-xl);background:var(--color-brand-dark);color:#fff;box-shadow:0 12px 28px rgba(8,18,50,.18); }
 .sidebar-branding { margin-bottom:38px; }
 .sidebar-branding img { display:block;width:158px;height:auto;margin-bottom:20px;filter:brightness(0) invert(1); }
 .ui-sidebar .brand { margin:0;color:var(--color-brand);font-size:1.05rem;font-weight:600;letter-spacing:.02em; }
 .ui-navbar { flex:1; }
 .ui-navbar .button--nav-item { margin-bottom:var(--space-2); }
 .sidebar-bottom { margin-top:auto;padding-top:20px;border:0; }
-.sidebar-user { display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:12px;border-radius:var(--radius-md);background:var(--color-brand-dark-soft); }
-.sidebar-avatar { flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:var(--color-brand); }
+.sidebar-user { display:flex;align-items:center;gap:12px;margin-bottom:14px; }
+.sidebar-avatar { flex:0 0 auto;width:42px;height:42px;color:var(--color-brand);stroke-width:1.5; }
 .sidebar-user strong,.sidebar-user small { display:block; }
-.sidebar-user strong { color:#fff;font-size:.875rem; }
-.sidebar-user small { margin-top:2px;color:#aeb7d0;font-size:.75rem; }
+.sidebar-user strong { color:#fff;font-size:1rem;font-weight:600; }
+.sidebar-user small { margin-top:2px;color:#aeb7d0;font-size:.8125rem; }
 @media(max-width:900px){.ui-sidebar{position:static;height:auto;padding:20px}.sidebar-branding{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.sidebar-branding img{width:130px;margin:0}.ui-navbar{display:flex;gap:8px}.ui-navbar .button--nav-item{margin:0}.sidebar-bottom{display:flex;gap:10px;align-items:center;padding-top:16px}.sidebar-user{flex:1;margin:0}}
