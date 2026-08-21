@@ -1,6 +1,6 @@
 .tabs { display:flex;align-items:center;gap:10px;margin:0 0 26px;border:0; }
 .tab.ui-button { min-height:44px;margin:0;padding:.65rem 1.25rem;border:0;border-radius:var(--radius-md);background:transparent;color:var(--text-muted); }
-.tab.ui-button:hover:not(:disabled) { background:#fff;color:var(--color-brand-dark); }
-.tab.ui-button.active { background:var(--color-brand-dark);color:#fff; }
-.tab.ui-button.active:hover:not(:disabled) { background:var(--color-brand-dark-hover);color:#fff; }
+.tab.ui-button:hover:not(:disabled) { background:var(--white);color:var(--color-brand-dark); }
+.tab.ui-button.active { background:var(--color-brand-dark);color:var(--white); }
+.tab.ui-button.active:hover:not(:disabled) { background:var(--color-brand-dark-hover);color:var(--white); }
 @media(max-width:700px){.tabs{overflow-x:auto}}

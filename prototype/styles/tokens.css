@@ -1,7 +1,7 @@
 :root {
   --global-bg: #fafafa;
   --color-brand: #ffce00;
-  --color-brand-hover: rgba(255, 206, 0, .62);
+  --color-brand-hover: #eabb00;
   --color-brand-dark: #152663;
   --color-brand-dark-soft: #22346f;
   --color-brand-dark-hover: #263b7f;
@@ -9,7 +9,9 @@
   --color-success: #10b981;
   --color-info-bg: #fffaf0;
   --color-info-border: #f6cf55;
-  --color-info-text: #9a3f0a;
+  --amber-900: #9a3f0a;
+  --color-info-text: var(--amber-900);
+  --color-warning-text: var(--amber-900);
   --gray-50: #fafafa;
   --gray-100: #f2f2f2;
   --gray-200: #eeeeee;
@@ -22,6 +24,8 @@
   --gray-800: #212529;
   --gray-900: #191919;
   --white: #ffffff;
+  --text-base: #111827;
+  --text-caption: #566174;
   --surface-page: var(--global-bg);
   --surface-raised: var(--white);
   --surface-sunken: var(--gray-100);
@@ -34,11 +38,19 @@
   --border-default: var(--gray-400);
   --border-subtle: var(--gray-200);
   --border-card: #dfe3ea;
+  --border-hover: #cbd1dd;
   --filter-chip-bg: var(--white);
   --filter-chip-bg-hover: #f6f8ff;
   --filter-chip-border: var(--gray-300);
   --filter-chip-border-active: #2757d7;
   --filter-chip-focus-ring: rgba(39, 87, 215, .2);
+  --blue-50: #eef2ff;
+  --color-hover-soft: var(--blue-50);
+  --status-bg: var(--blue-50);
+  --status-text: #2563d9;
+  --table-header-bg: #f1f3f6;
+  --table-header-text: #4d586b;
+  --table-row-hover: #fafbfc;
   --font-family-base: "Gilroy", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-weight-min: 600;
   --font-weight-bold: 700;
@@ -63,7 +75,7 @@
   --sidebar-width: 240px;
   --sidebar-width-collapsed: 76px;
   --sidebar-bg: #f1f2f4;
-  --sidebar-border: #e4e6e9;
+  --sidebar-border: #e4e6ea;
   --sidebar-item-hover: #e4e6ea;
   --topbar-height: 72px;
   --transition-base: .2s ease-in-out;

@@ -33,7 +33,7 @@
   cursor:pointer;
   outline:0;
 }
-.custom-select__option:hover,.custom-select__option:focus { background:#eef2ff;color:var(--color-brand-dark); }
+.custom-select__option:hover,.custom-select__option:focus { background:var(--color-hover-soft);color:var(--color-brand-dark); }
 .custom-select__option.is-selected { background:var(--color-brand-dark);color:var(--white); }
 .custom-select__option.is-selected:hover,.custom-select__option.is-selected:focus { background:var(--color-brand-dark-hover);color:var(--white); }
 .custom-select__option.is-disabled { color:var(--text-disabled);cursor:not-allowed;opacity:.65; }
