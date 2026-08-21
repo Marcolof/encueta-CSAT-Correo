@@ -1,4 +1,4 @@
-.ui-button { box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);min-height:42px;padding:.65rem 1.15rem;border:1px solid transparent;border-radius:var(--radius-md);font-family:var(--font-family-base);font-size:.9375rem;font-weight:600;line-height:1.2;text-align:center;cursor:pointer;transition:background-color var(--transition-base),color var(--transition-base),border-color var(--transition-base),box-shadow var(--transition-base); }
+.ui-button { -webkit-appearance:none;appearance:none;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);min-height:42px;padding:.65rem 1.15rem;border:1px solid transparent;border-radius:var(--radius-md);font-family:var(--font-family-base);font-size:.9375rem;font-weight:600;line-height:1.2;text-align:center;cursor:pointer;transition:background-color var(--transition-base),color var(--transition-base),border-color var(--transition-base),box-shadow var(--transition-base); }
 .ui-button:focus-visible { outline:3px solid rgba(33,150,243,.3);outline-offset:2px; }
 .ui-button:active:not(:disabled) { box-shadow:inset 0 3px 5px rgba(0,0,0,.12); }
 .button--accent,.ui-button.primary { background:var(--color-brand);border-color:var(--color-brand);color:var(--color-brand-dark); }
@@ -15,15 +15,13 @@
 .button--square:hover:not(:disabled) { background:#eef2ff;border-color:var(--color-brand-dark); }
 .button--square.is-active { background:var(--color-brand-dark);border-color:var(--color-brand-dark);color:var(--white); }
 .button--square.is-active:hover:not(:disabled) { background:var(--color-brand-dark-hover);border-color:var(--color-brand-dark-hover);color:var(--white); }
-.button--nav-item { position:relative;width:100%;min-height:52px;justify-content:flex-start;padding:.8rem 1rem;border:0;border-radius:var(--radius-md);background:transparent;color:#aeb7d0;text-align:left; }
-.button--nav-item:hover:not(:disabled) { background:rgba(255,255,255,.06);color:var(--white); }
-.button--nav-item.active { background:var(--color-brand-dark-soft);color:var(--white); }
+.button--nav-item { position:relative;width:100%;min-height:48px;justify-content:flex-start;gap:12px;padding:.7rem 1rem;border:0;border-radius:var(--radius-md);background:transparent;color:var(--color-brand-dark);text-align:left; }
+.button--nav-item:hover:not(:disabled) { background:var(--sidebar-item-hover);color:var(--color-brand-dark); }
+.button--nav-item.active { background:var(--color-brand-dark);color:var(--white); }
 .button--nav-item.active:hover:not(:disabled) { background:var(--color-brand-dark-hover);color:var(--white); }
-.button--nav-item.active::after { content:"";position:absolute;left:0;top:12px;bottom:12px;width:4px;border-radius:0 4px 4px 0;background:var(--color-brand); }
-.button--nav-item.active .lucide-icon { color:var(--color-brand); }
-.button--sidebar-action { width:100%;justify-content:flex-start;background:transparent;border-color:rgba(255,255,255,.16);color:#aeb7d0; }
-.button--sidebar-action:hover:not(:disabled) { background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.34);color:var(--white); }
-.button--sidebar-action:hover:not(:disabled) .lucide-icon { color:var(--color-brand); }
+.button--nav-item.active .lucide-icon { color:var(--white); }
+.button--sidebar-action { width:100%;min-height:48px;justify-content:flex-start;gap:12px;padding:.7rem 1rem;border:0;border-radius:var(--radius-md);background:var(--gray-100);color:var(--color-brand-dark); }
+.button--sidebar-action:hover:not(:disabled) { background:var(--sidebar-item-hover);color:var(--color-brand-dark); }
 .button--filter-clear { min-height:40px;padding:.55rem .8rem;background:var(--gray-100);border-color:transparent;color:var(--color-brand-dark); }
 .button--filter-clear:hover:not(:disabled) { background:var(--gray-200);border-color:var(--gray-300); }
 .button--select-trigger { width:100%;min-height:42px;justify-content:space-between;padding:.6rem .8rem;background:var(--white);border-color:var(--border-default);color:var(--color-brand-dark); }

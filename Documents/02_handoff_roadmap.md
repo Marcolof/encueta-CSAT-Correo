@@ -1,8 +1,8 @@
 # Hand-off y roadmap — Sistema CSAT
 
 **Estado:** Documento vivo  
-**Fecha:** 13/08/2026  
-**Fase actual:** Descubrimiento funcional + wireframe navegable
+**Fecha:** 21/08/2026  
+**Fase actual:** Prototipo de media fidelidad con dirección visual aplicada + línea base de specs
 
 ---
 
@@ -32,16 +32,16 @@ Diagrama técnico con:
 - tarea programada;
 - exposición HTTPS / capa de seguridad.
 
-### Wireframe navegable
+### Prototipo navegable
 
-Versión actual:
+Ruta actual:
 
-`csat_wireframe_backoffice_v6.html`
+`prototype/index.html`
 
-Características:
+Reemplaza al wireframe en blanco y negro `csat_wireframe_backoffice_v6.html`, que queda obsoleto.
 
-- blanco y negro;
-- estilo wireframe;
+Características funcionales:
+
 - login falso;
 - navegación por rol;
 - operativos con tabs;
@@ -50,7 +50,36 @@ Características:
 - detalle de activo;
 - historial;
 - lectura restringida para Controlador;
-- gestión preliminar de usuarios para Admin.
+- gestión preliminar de usuarios para Admin;
+- deep-links `?goto=rol.vista[.variante]` para posicionar una vista sin interacción.
+
+Características técnicas:
+
+- HTML/CSS/JS sin build ni dependencias;
+- tokens y componentes propios en `prototype/styles/` y `prototype/components/`;
+- fuentes Gilroy locales, sin recursos externos.
+
+### Hub del proyecto
+
+`index.html` en la raíz, con cuatro accesos: prototipo, flujo de navegación, presentación y documentación.
+
+- `hub/flujo.html` — cuadro de navegación por rol.
+- `hub/presentacion.html` — instructivo de navegación de 18 slides. Las 10 pantallas que muestra
+  **no son imágenes**: son iframes del prototipo real, escalados desde 1440×900 y con
+  `pointer-events: none`. Se actualizan solos cuando cambia el prototipo.
+- `hub/docs/` — versión HTML de estos documentos, generada con `node tools/md2html.js`.
+
+### Línea base de specs (OpenSpec)
+
+OpenSpec inicializado en el proyecto (schema `spec-driven`, integración con Claude Code).
+
+Change activo: `documentar-backoffice-csat` — documenta el comportamiento **existente** del
+backoffice en siete capabilities: `acceso-y-roles`, `operativos/listado`, `operativos/creacion`,
+`operativos/configuracion-y-lanzamiento`, `operativos/seguimiento`,
+`operativos/finalizacion-e-historial` y `usuarios-y-roles`.
+
+Estado: propuesta y specs escritas, `openspec validate --strict` en verde.
+**Pendiente de archivar** para consolidar en `openspec/specs/`.
 
 ---
 
@@ -110,6 +139,46 @@ La finalización manual no genera obligatoriamente un archivo para Analytics.
 
 ---
 
+## 3.bis Decisiones de dirección visual — 21/08/2026
+
+**Confirmado:** el proyecto se alinea al design system corporativo. Pedido de negocio.
+
+Esto cierra la etapa de wireframe en blanco y negro: el prototipo pasa a media fidelidad con
+la paleta amarillo `#ffce00` / azul marino `#152663`, tipografía Gilroy y componentes propios.
+
+### Shell de la aplicación — cambio estructural
+
+Reemplaza el layout anterior (sidebar navy flotante con logo arriba y usuario abajo):
+
+- **Barra superior nueva**, antes inexistente: banda amarilla full-width de 72px, sticky, con
+  hamburguesa, logo, título de la aplicación y usuario a la derecha (avatar con inicial +
+  nombre + rol).
+- **Sidebar invertida a fondo claro** (`#f1f2f4`), 240px, pegada al borde, sin logo ni bloque de
+  usuario: solo navegación y "Cerrar sesión" al pie.
+- **Item activo**: pill navy sólido sobre fondo claro. Se elimina el marcador amarillo lateral.
+- **Contracción a solo iconos** (240px → 76px) desde la hamburguesa, con transición de 260ms.
+
+### Criterios de interacción adoptados
+
+- **Área tocable completa en los controles.** El chip de filtro pasó a ser un único botón que
+  abarca todo el pill —etiqueta incluida— en lugar de tener el área activa limitada al valor y
+  al chevron. Un solo control focusable por chip.
+- **Transiciones interpoladas, sin saltos.** Se anima `grid-template-columns` en vez de la
+  variable de ancho (las custom properties no interpolan), y los textos colapsan su ancho en
+  lugar de usar `display: none`. Incluye `prefers-reduced-motion`.
+
+### Deuda técnica registrada
+
+- `prototype/index.html` conserva un bloque de estilos wireframe legado (Arial, bordes negros,
+  estilos de login) que compite con el design system. Se le quitó el pintado de botones; el
+  resto sigue activo. **Pendiente de limpieza.**
+- Los `<button>` necesitan `appearance: none` explícito en `.ui-button`: sin eso el widget
+  nativo del navegador pinta por encima del design system. Ya aplicado.
+- El nombre del producto aparece de dos formas: "Sistema CSAT · Backoffice" en el hub y la
+  presentación, y "Gestión de Operativos CSAT" en el header. **Pendiente de unificar.**
+
+---
+
 ## 4. Hipótesis actuales
 
 Estas decisiones existen para poder continuar el prototipo, pero no están confirmadas por negocio.
@@ -160,15 +229,17 @@ Debe validarse antes de implementación.
 ## 6. Roadmap propuesto
 
 ### Fase 0 — Consolidación del relevamiento
-**Estado:** En curso
+**Estado:** Completada — 21/08/2026
 
 - revisar GDD-773;
 - analizar arquitectura;
 - consolidar términos;
 - registrar dudas;
-- construir wireframe básico.
+- construir wireframe básico;
+- dejar el comportamiento existente escrito como specs verificables (OpenSpec).
 
-**Salida:** entendimiento funcional compartido.
+**Salida:** entendimiento funcional compartido, con la línea base de comportamiento
+documentada en el change `documentar-backoffice-csat`.
 
 ---
 
@@ -229,17 +300,28 @@ Agregar:
 ---
 
 ### Fase 4 — Diseño UI
-**Estado:** Pendiente
+**Estado:** En curso desde el 21/08/2026
 
-No iniciar hasta contar con:
+Se inició por pedido de negocio de alinear el producto al design system corporativo. La condición
+de "no iniciar hasta tener lineamientos visuales aprobados" quedó satisfecha por esa definición.
 
-- lineamientos visuales aprobados;
-- sistema de diseño / componentes;
-- branding;
-- comportamiento responsive;
-- definición de accesibilidad.
+Hecho:
 
-**Salida:** mockup visual de alta fidelidad.
+- dirección visual aplicada a todas las vistas existentes;
+- tokens, componentes y variantes de botón propios;
+- shell rediseñado: barra superior amarilla + sidebar clara contraíble;
+- criterio de área tocable completa en controles compuestos;
+- transiciones y `prefers-reduced-motion`.
+
+Pendiente:
+
+- revisión de accesibilidad con criterio explícito (contraste, foco visible, orden de tabulación);
+- comportamiento responsive por debajo de 700px;
+- estados vacíos, de carga y de error con tratamiento visual;
+- limpieza del bloque de estilos legado;
+- unificación del nombre del producto.
+
+**Salida:** prototipo de media/alta fidelidad alineado al design system.
 
 ---
 
@@ -276,17 +358,49 @@ Entregar:
 
 ## 7. Próxima acción recomendada
 
-Realizar la próxima reunión funcional usando las 6 preguntas abiertas como agenda mínima.
+**Bloqueante del proyecto:** realizar la reunión funcional usando las 6 preguntas abiertas de
+`01_funcional.md` como agenda mínima. Ninguna de las seis se resolvió todavía, y la primera
+—reglas de muestreo contra carga de Excel— sigue siendo la que puede invalidar el flujo de
+creación completo.
 
-Luego actualizar:
+**Acciones inmediatas, sin dependencias externas:**
+
+1. archivar el change `documentar-backoffice-csat` para consolidar `openspec/specs/`;
+2. limpiar el bloque de estilos legado de `prototype/index.html`;
+3. unificar el nombre del producto entre hub, presentación y header;
+4. revisar accesibilidad del shell nuevo (contraste sobre amarillo, foco visible, tabulación).
+
+Luego de la reunión, actualizar:
 
 1. `01_funcional.md`
 2. `02_handoff_roadmap.md`
 3. `03_ux.md`
 4. `05_arquitectura.md`
-5. wireframe HTML
+5. specs de OpenSpec afectadas
+6. prototipo
 
-El diseño UI debe permanecer en estado **Pendiente** hasta contar con definiciones visuales reales.
+El diseño UI **ya no está en pausa**: la definición de alinearse al design system corporativo
+habilitó la Fase 4. Lo que sigue pendiente es la validación de accesibilidad y responsive.
+
+---
+
+## 7.bis Registro de cambios
+
+### 21/08/2026
+
+- **OpenSpec incorporado al proyecto.** Inicializado con schema `spec-driven`. Change
+  `documentar-backoffice-csat` con siete capabilities que documentan el comportamiento
+  existente. Validado en estricto, sin archivar.
+- **Dirección visual alineada al design system corporativo** (pedido de negocio). Cierra la
+  etapa de wireframe en blanco y negro.
+- **Shell rediseñado.** Barra superior amarilla nueva; sidebar invertida a fondo claro, 240px;
+  item activo como pill navy; contracción a solo iconos con transición de 260ms.
+- **Chip de filtro:** el área tocable pasó a ser todo el pill, con un único control focusable.
+- **Corrección de base:** `appearance: none` en `.ui-button`, sin lo cual el widget nativo del
+  navegador pinta por encima del design system.
+- **Documentación:** hub con cuatro accesos y presentación de 18 slides que refleja el
+  prototipo en vivo, por lo que absorbió el rediseño sin edición.
+- Deuda registrada: bloque de estilos legado, doble nombre del producto.
 
 ---
 
@@ -299,4 +413,8 @@ Cada decisión futura debe clasificarse como:
 - **Pendiente**
 - **Descartado**
 
-Evitar convertir una hipótesis del wireframe en requerimiento funcional sin validación.
+Evitar convertir una hipótesis del prototipo en requerimiento funcional sin validación.
+
+Esto aplica también a las specs de OpenSpec: describen el comportamiento **actual del
+prototipo**, no comportamiento aprobado por negocio. Lo que allí figura como "pendiente de
+definición" o "pendiente de validación" debe seguir marcado así hasta que exista una decisión.

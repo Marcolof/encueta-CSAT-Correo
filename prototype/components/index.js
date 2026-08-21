@@ -1,4 +1,5 @@
 function resolveButtonVariant(el) {
+  if (el.classList.contains("app-header__burger")) return;
   el.classList.add("ui-button");
   el.classList.remove("button--accent", "button--transparent", "button--invert", "button--ghost", "button--icon", "button--outline", "button--square", "button--nav-item", "button--sidebar-action", "button--filter-clear", "button--select-trigger");
   if (el.classList.contains("login-submit")) el.classList.add("button--invert");
@@ -83,6 +84,10 @@ function bindCustomSelect(select) {
   trigger.setAttribute("aria-expanded", "false");
   const value = document.createElement("span");
   value.className = "custom-select__value";
+  // En los chips, la etiqueta ("Segmento:") pasa a vivir DENTRO del trigger para que
+  // toda la superficie del chip sea un único control tocable y focusable.
+  const chipLabel = select.closest(".filter-chip")?.querySelector(".filter-chip__label");
+  if (chipLabel) trigger.append(chipLabel);
   trigger.append(value);
   trigger.insertAdjacentHTML("beforeend", selectChevron);
 
@@ -134,8 +139,12 @@ function bindCustomSelect(select) {
   const update = () => {
     const selected = select.options[select.selectedIndex];
     value.textContent = selected?.textContent || "Seleccionar";
-    const chipLabel = select.closest(".filter-chip")?.querySelector(".filter-chip__label")?.textContent || "Seleccionar";
-    trigger.setAttribute("aria-label", `${chipLabel} ${value.textContent}`);
+    // Si la etiqueta ya está dentro del trigger, su propio texto nombra el control:
+    // un aria-label lo duplicaría.
+    if (!chipLabel) {
+      const outerLabel = select.closest(".filter-chip")?.querySelector(".filter-chip__label")?.textContent || "Seleccionar";
+      trigger.setAttribute("aria-label", `${outerLabel} ${value.textContent}`);
+    }
     trigger.disabled = select.disabled;
     menu.querySelectorAll(".custom-select__option").forEach((item, index) => {
       const isSelected = index === select.selectedIndex;

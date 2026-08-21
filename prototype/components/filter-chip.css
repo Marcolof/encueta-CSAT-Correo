@@ -11,19 +11,23 @@
 .filters>.ui-input.is-filtered { border-color:var(--filter-chip-border-active);box-shadow:0 0 0 1px var(--filter-chip-focus-ring); }
 .filter-chip {
   display:inline-flex;
-  align-items:center;
+  align-items:stretch;
   min-height:42px;
-  padding:0 10px 0 14px;
+  /* Sin padding propio: lo aporta el trigger, para que el área tocable sea el chip
+     completo y no quede un borde muerto alrededor del botón. */
+  padding:0;
   border:1px solid var(--filter-chip-border);
   border-radius:var(--radius-pill);
   background:var(--filter-chip-bg);
   color:var(--text-muted);
   transition:background-color var(--transition-base),border-color var(--transition-base),box-shadow var(--transition-base);
 }
+.filter-chip>.custom-select { flex:1 1 auto;display:flex; }
 .filter-chip:hover { background:var(--filter-chip-bg-hover);border-color:var(--gray-500); }
 .filter-chip:focus-within { border-color:var(--filter-chip-border-active);box-shadow:0 0 0 3px var(--filter-chip-focus-ring); }
 .filter-chip.is-active { border-color:var(--filter-chip-border-active);color:var(--color-brand-dark); }
-.filter-chip__label { flex:0 0 auto;margin-right:5px;font-weight:600; }
+.filter-chip__label { flex:0 0 auto;color:var(--text-muted);font-weight:600; }
+.filter-chip.is-active .filter-chip__label { color:var(--color-brand-dark); }
 .filter-chip .ui-select {
   width:auto;
   min-width:74px;

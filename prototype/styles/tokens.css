@@ -60,6 +60,12 @@
   --shadow-row: 0 2px 2px 1px rgba(195, 195, 195, .25);
   --shadow-dropdown: 0 .5rem 1rem rgba(0, 0, 0, .15);
   --shadow-card: 0 2px 8px rgba(21, 38, 99, .04);
-  --sidebar-width: 312px;
+  --sidebar-width: 240px;
+  --sidebar-width-collapsed: 76px;
+  --sidebar-bg: #f1f2f4;
+  --sidebar-border: #e4e6e9;
+  --sidebar-item-hover: #e4e6ea;
+  --topbar-height: 72px;
   --transition-base: .2s ease-in-out;
+  --transition-nav: .26s cubic-bezier(.4, 0, .2, 1);
 }

@@ -40,17 +40,22 @@
 .custom-select__check { width:17px;height:17px;visibility:hidden; }
 .custom-select__option.is-selected .custom-select__check { visibility:visible; }
 .custom-select--chip { width:auto; }
+/* El trigger llena el chip entero: es la superficie tocable completa. */
 .custom-select--chip .custom-select__trigger {
-  width:auto;
-  min-width:92px;
+  width:100%;
+  min-width:0;
   min-height:40px;
-  padding:0 2px 0 0;
+  gap:6px;
+  padding:0 12px 0 14px;
   border:0;
-  border-radius:0;
+  border-radius:var(--radius-pill);
   background:transparent;
+  justify-content:flex-start;
   box-shadow:none;
 }
 .custom-select--chip .custom-select__trigger:hover:not(:disabled) { border:0;background:transparent; }
 .custom-select--chip.is-open .custom-select__trigger { border:0;box-shadow:none; }
-.custom-select--chip .custom-select__menu { left:-14px;min-width:calc(100% + 28px); }
-.custom-select--chip .custom-select__value { font-weight:700; }
+.custom-select--chip .custom-select__trigger:focus-visible { outline:0;box-shadow:none; }
+.custom-select--chip .custom-select__chevron { margin-left:auto; }
+.custom-select--chip .custom-select__menu { left:0;min-width:100%; }
+.custom-select--chip .custom-select__value { flex:0 1 auto;font-weight:700; }
