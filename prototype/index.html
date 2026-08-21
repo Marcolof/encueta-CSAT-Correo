@@ -47,12 +47,12 @@
     .hidden { display:none !important; }
 
     /* LOGIN */
+    /* El layout del login (header amarillo + cuerpo centrado sobre fondo navy)
+       se define en styles/global.css: .login-screen / .login-header / .login-body.
+       Acá no se centra ni se agrega padding para que el header pueda ir a borde completo. */
     .login-screen {
       min-height:100vh;
       display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
     }
     .login-card {
       width:min(560px,100%);
@@ -327,6 +327,11 @@
 
   <!-- LOGIN FALSO -->
   <section id="loginScreen" class="login-screen">
+    <header class="login-header">
+      <img src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+    </header>
+
+    <div class="login-body">
     <div class="login-card">
       <div class="login-logo" aria-label="Correo Argentino">
         <img src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
@@ -361,6 +366,7 @@
           <button onclick="loginAs('controlador')"><strong>Controlador</strong><br><span class="small">Consulta en solo lectura</span></button>
         </div>
       </div>
+    </div>
     </div>
   </section>
 
