@@ -67,6 +67,7 @@ una decisión de contraste, no estética: mantenerla al portar.
 | `--gray-800` | `#212529` | Texto secundario |
 | `--gray-900` | `#191919` | Texto primario (nunca negro puro) |
 | `--white` | `#ffffff` | Superficie elevada (tarjetas, modales, campos) |
+| `--white-alpha-15` | `rgba(255,255,255,0.15)` | Superficie semitransparente sobre fondo oscuro |
 | `--red-100` / `--red-600` / `--red-700` | `#ffd0d0` / `#d32f2f` / `#ed143d` | Fondo / texto / texto fuerte de error |
 | `--green-100` / `--green-700` | `#d1e7dd` / `#0f5132` | Fondo / texto de éxito |
 | `--yellow-100` / `--yellow-900` | `#fff3cd` / `#664d03` | Fondo / texto de advertencia |
@@ -86,6 +87,7 @@ una decisión de contraste, no estética: mantenerla al portar.
 --surface-raised:   var(--white);     /* tarjeta, modal, campo */
 --surface-brand:    var(--color-brand);
 --surface-disabled: var(--gray-300);
+--surface-translucent: var(--white-alpha-15); /* sobre fondo oscuro, deja ver el fondo */
 
 /* Texto — 4 niveles de énfasis, nunca más */
 --text-primary:  var(--gray-900);
@@ -110,6 +112,23 @@ una decisión de contraste, no estética: mantenerla al portar.
 --feedback-warning-bg: #fff3cd;
 --feedback-warning-text: #664d03;
 ```
+
+### Superficies sobre fondo oscuro
+
+Cuando un bloque se apoya sobre el color de marca oscuro (una portada, una pantalla
+de acceso), no conviene darle un gris de la escala: sobre fondo oscuro los grises se
+leen como suciedad. La solución que se sostiene es **blanco con alfa bajo**
+(10–20%), que se apoya en el fondo real en vez de competir con él.
+
+Dos criterios al portarlo:
+
+1. **El alfa vive en el primitive, no en el componente.** Se declara
+   `--white-alpha-15` como valor crudo y se consume vía `--surface-translucent`.
+   Un `rgba()` suelto dentro de un componente es un color sin nombre: no se puede
+   reusar ni cambiar de forma centralizada.
+2. **No es lo mismo que bajar la opacidad del elemento.** La opacidad afecta también
+   al contenido (texto e íconos quedan lavados). El alfa tiene que estar en el color
+   de fondo, no en el nodo.
 
 ---
 
@@ -146,9 +165,15 @@ es parte del "look" reconocible.
 | `--text-lg` | 1.25rem / 20px | Subtítulos |
 | `--text-xl` | 1.375rem / 22px | Título de modal |
 | `--text-2xl` | 1.5rem / 24px | Título de página |
+| `--text-display` | 2.625rem / 42px | Título de portada / pantalla de acceso |
 
 Interlineado: `tight` 1.2 (títulos), `snug` 1.25 (botones, UI compacta), `normal` 1.5
 (cuerpo de texto largo).
+
+El paso `display` queda deliberadamente fuera de la escala de UI: es para el único
+título grande de una portada o pantalla de acceso, no para títulos de pantalla
+interna (para eso está `--text-2xl`). Si aparece dos veces en la misma vista, está
+mal usado.
 
 ---
 
@@ -392,11 +417,13 @@ destino — todo lo demás (estructura de capas, escalas, radios) es reusable ta
   --gray-700: #49454f;
   --gray-900: #191919;
   --white: #ffffff;
+  --white-alpha-15: rgba(255, 255, 255, 0.15);
 
   /* Semántico */
   --surface-page: var(--gray-50);
   --surface-raised: var(--white);
   --surface-sunken: var(--gray-100);
+  --surface-translucent: var(--white-alpha-15);
   --text-primary: var(--gray-900);
   --text-muted: var(--gray-700);
   --text-disabled: var(--gray-600);
@@ -412,6 +439,7 @@ destino — todo lo demás (estructura de capas, escalas, radios) es reusable ta
   --text-base: 1rem;
   --text-lg: 1.25rem;
   --text-xl: 1.375rem;
+  --text-display: 2.625rem;
 
   /* Espaciado */
   --space-1: 0.25rem;
@@ -447,7 +475,19 @@ destino — todo lo demás (estructura de capas, escalas, radios) es reusable ta
 
 ---
 
-**Fuente:** extraído de [`src/styles/tokens.css`](../src/styles/tokens.css) y
-[`src/shared/ui/Button`](../src/shared/ui/Button) de este proyecto (MiCorreo /
-Correo Argentino), 2026-08-18. Pensado como punto de partida — no como copia
-literal — para un proyecto HTML distinto.
+**Fuente:** extraído de `src/styles/tokens.css` y `src/shared/ui/Button` del proyecto
+**MiCorreo** (Correo Argentino), 2026-08-18. Pensado como punto de partida — no como
+copia literal — para un proyecto HTML distinto.
+
+> **Ojo con este documento:** describe el lenguaje visual de *MiCorreo*, no el de
+> este repo. Sus valores (alto de campo 38px, peso base 500, `--radius-2xl`) son de
+> aquel proyecto y **no** coinciden con
+> [`prototype/styles/tokens.css`](../prototype/styles/tokens.css) del Sistema CSAT —
+> esa divergencia es intencional, no un desfasaje a corregir. No sincronizar los dos
+> archivos.
+
+**Actualización 2026-08-26:** se agregaron el patrón de *superficie semitransparente
+sobre fondo oscuro* (`--white-alpha-15` → `--surface-translucent`) y el paso
+tipográfico `--text-display`, ambos surgidos al rediseñar la pantalla de acceso del
+Sistema CSAT. Se incorporan acá por ser criterios genéricos y portables, con nombres
+neutros, igual que el resto del documento.
