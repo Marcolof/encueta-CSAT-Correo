@@ -24,12 +24,17 @@
   --gray-800: #212529;
   --gray-900: #191919;
   --white: #ffffff;
+  /* Blanco al 15%: superficie semitransparente sobre fondos oscuros. */
+  --white-alpha-15: rgba(255, 255, 255, .15);
   --text-base: #111827;
   --text-caption: #566174;
   --surface-page: var(--global-bg);
   --surface-raised: var(--white);
   --surface-sunken: var(--gray-100);
   --surface-rail: var(--gray-200);
+  /* Superficie que deja ver el fondo oscuro detrás (chips del login). */
+  --surface-translucent: var(--white-alpha-15);
+  --text-on-dark: var(--white);
   --text-primary: var(--gray-900);
   --text-secondary: var(--gray-800);
   --text-muted: var(--gray-700);
@@ -54,6 +59,10 @@
   --font-family-base: "Gilroy", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-weight-min: 600;
   --font-weight-bold: 700;
+  --font-size-sm: .8125rem;
+  --font-size-base: .875rem;
+  --font-size-lg: 1rem;
+  --font-size-display: 2.625rem;
   --space-1: .25rem;
   --space-2: .5rem;
   --space-3: .75rem;

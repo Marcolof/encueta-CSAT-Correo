@@ -47,31 +47,10 @@
     .hidden { display:none !important; }
 
     /* LOGIN */
-    /* El layout del login (header amarillo + cuerpo centrado sobre fondo navy)
-       se define en styles/global.css: .login-screen / .login-header / .login-body.
-       Acá no se centra ni se agrega padding para que el header pueda ir a borde completo. */
-    .login-screen {
-      min-height:100vh;
-      display:flex;
-    }
-    .login-card {
-      width:min(560px,100%);
-      border:1px solid var(--black);
-      padding:28px;
-    }
-    .login-card .field { margin-bottom:14px; }
-    .role-demo {
-      margin-top:20px;
-      padding-top:18px;
-      border-top:1px solid var(--black);
-    }
-    .role-grid {
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:8px;
-      margin-top:10px;
-    }
-    .role-grid button { min-height:64px; }
+    /* Todo el layout del login (fondo navy, columna de presentación y card)
+       vive en styles/global.css: .login-screen / .login-body / .login-main /
+       .login-intro / .login-card. No duplicar reglas acá: este bloque quedaba
+       de la etapa wireframe y pisaba al CSS real por cascada. */
 
     /* APP */
     .app {
@@ -327,17 +306,28 @@
 
   <!-- LOGIN FALSO -->
   <section id="loginScreen" class="login-screen">
-    <header class="login-header">
-      <img src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
-    </header>
-
     <div class="login-body">
-    <div class="login-card">
-      <div class="login-logo" aria-label="Correo Argentino">
-        <img src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+    <div class="login-main">
+
+      <div class="login-intro">
+        <div class="login-logo">
+          <img src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
+        </div>
+        <div class="login-intro__text">
+          <h1>CSAT / Backoffice</h1>
+          <p>Sistema automatizado de envío y medición de encuestas CSAT</p>
+        </div>
+        <ol class="login-steps">
+          <li class="login-step"><span class="login-step__num">1</span>Crear</li>
+          <li class="login-step"><span class="login-step__num">2</span>Configurar</li>
+          <li class="login-step"><span class="login-step__num">3</span>Lanzar</li>
+          <li class="login-step"><span class="login-step__num">4</span>Seguimiento</li>
+          <li class="login-step"><span class="login-step__num">5</span>Finalizar</li>
+        </ol>
       </div>
-      <h1>CSAT / Backoffice</h1>
-      <p class="muted">Login de demostración. Usuario y contraseña son solo visuales: el mockup no valida credenciales.</p>
+
+    <div class="login-card">
+      <p class="login-card__intro">Ingresá con tus credenciales</p>
 
       <div class="field">
         <label>Usuario</label>
@@ -366,6 +356,8 @@
           <button onclick="loginAs('controlador')"><strong>Controlador</strong><br><span class="small">Consulta en solo lectura</span></button>
         </div>
       </div>
+    </div>
+
     </div>
     </div>
   </section>
