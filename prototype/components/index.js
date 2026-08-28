@@ -17,6 +17,78 @@ function resolveButtonVariant(el) {
 const Button={mount(root=document){root.querySelectorAll("button").forEach(resolveButtonVariant)}};
 const Input={mount(root=document){root.querySelectorAll("input").forEach(el=>el.classList.add("ui-input"))}};
 const Select={mount(root=document){root.querySelectorAll("select").forEach(el=>el.classList.add("ui-select"))}};
+
+const eyeShowSvg = '<svg class="lucide-icon eye-show" aria-hidden="true" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>';
+const eyeHideSvg = '<svg class="lucide-icon eye-hide" aria-hidden="true" viewBox="0 0 24 24"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.8 10.8 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>';
+
+/**
+ * Fábrica reutilizable de campos de formulario, equivalente al componente
+ * Input de Figma (Label + Field + Helper, con estado Password opcional).
+ * Devuelve { field, input } — `field` es el <div class="field"> listo para
+ * insertar en el DOM, `input` es el <input> real para leer/escribir su valor.
+ */
+const Field = {
+  create({
+    id,
+    type = "text",
+    label,
+    value = "",
+    placeholder,
+    helper,
+    required = false,
+    showLabel = true,
+  } = {}) {
+    const field = document.createElement("div");
+    field.className = "field";
+
+    if (showLabel && label) {
+      const labelEl = document.createElement("label");
+      if (required) labelEl.className = "required";
+      if (id) labelEl.htmlFor = id;
+      labelEl.textContent = label;
+      field.appendChild(labelEl);
+    }
+
+    let input;
+    if (type === "password") {
+      if (!id) throw new Error("Field.create: los campos type=\"password\" necesitan un id (lo usa el toggle de mostrar/ocultar).");
+      const control = document.createElement("div");
+      control.className = "password-control";
+      input = document.createElement("input");
+      input.type = "password";
+      input.id = id;
+      if (value) input.value = value;
+      if (placeholder) input.placeholder = placeholder;
+
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "password-toggle";
+      toggle.setAttribute("aria-label", "Mostrar contraseña");
+      toggle.setAttribute("aria-pressed", "false");
+      toggle.innerHTML = eyeShowSvg + eyeHideSvg;
+      toggle.addEventListener("click", () => togglePassword(id, toggle));
+
+      control.append(input, toggle);
+      field.appendChild(control);
+    } else {
+      input = document.createElement("input");
+      input.type = type;
+      if (id) input.id = id;
+      if (value) input.value = value;
+      if (placeholder) input.placeholder = placeholder;
+      field.appendChild(input);
+    }
+
+    if (helper) {
+      const small = document.createElement("small");
+      small.className = "muted";
+      small.textContent = helper;
+      field.appendChild(small);
+    }
+
+    return { field, input };
+  },
+};
 const Navbar={mount(root=document){
   root.querySelector("aside")?.classList.add("ui-sidebar");
   root.querySelector("#mainNav")?.classList.add("ui-navbar");

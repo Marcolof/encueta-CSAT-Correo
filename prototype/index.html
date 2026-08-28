@@ -329,21 +329,7 @@
     <div class="login-card">
       <p class="login-card__intro">Ingresá con tus credenciales</p>
 
-      <div class="field">
-        <label>Usuario</label>
-        <input value="usuario.demo@correo.com.ar" />
-      </div>
-      <div class="field">
-        <label>Contraseña</label>
-        <div class="password-control">
-          <input id="loginPassword" type="password" value="12345678" />
-          <button type="button" class="password-toggle" aria-label="Mostrar contraseña" aria-pressed="false" onclick="togglePassword('loginPassword',this)">
-            <svg class="lucide-icon eye-show" aria-hidden="true" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
-            <svg class="lucide-icon eye-hide" aria-hidden="true" viewBox="0 0 24 24"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.8 10.8 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>
-          </button>
-        </div>
-        <small class="muted">Demo: puede ingresarse cualquier valor.</small>
-      </div>
+      <div id="loginFields"></div>
 
       <button class="login-submit" onclick="loginAs('operador')">Iniciar sesión</button>
 
@@ -989,6 +975,21 @@
 
   <script src="components/index.js"></script>
   <script>
+    (function renderLoginFields(){
+      const userField = Field.create({
+        label: 'Usuario',
+        value: 'usuario.demo@correo.com.ar',
+      });
+      const passwordField = Field.create({
+        id: 'loginPassword',
+        type: 'password',
+        label: 'Contraseña',
+        value: '12345678',
+        helper: 'Demo: puede ingresarse cualquier valor.',
+      });
+      document.getElementById('loginFields').append(userField.field, passwordField.field);
+    })();
+
     let currentRole = 'operador';
     let userModalMode = 'create';
 
