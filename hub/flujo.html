@@ -187,7 +187,7 @@
             <div class="flow-sub__tabs">
               <span class="flow-chip">Todos</span>
               <span class="flow-chip">Activos</span>
-              <span class="flow-chip">Borradores</span>
+              <span class="flow-chip" style="background:#e7edfb;color:#2563d9;" title="Solo Operador: el Controlador no ve este tab">Borradores · solo Operador</span>
               <span class="flow-chip">Historial</span>
             </div>
           </div>
@@ -221,7 +221,7 @@
               <span class="flow-arrow">→</span>
               <div class="flow-node" style="min-width:130px;"><strong>“Continuar”</strong></div>
               <span class="flow-arrow">→</span>
-              <div class="flow-node flow-node--hub"><strong>Detalle Borrador</strong><span>Solo lectura si es Controlador</span></div>
+              <div class="flow-node flow-node--hub"><strong>Detalle Borrador</strong><span>Solo accesible para el Operador</span></div>
             </div>
 
             <div class="flow-branch">
@@ -294,7 +294,7 @@
           <li>El tab <strong>Todos</strong> no tiene filtros propios y nunca muestra operativos finalizados; solo redirige a Activos/Borradores.</li>
           <li>Todo operativo nuevo nace en <strong>Borrador</strong> — no existe un "Crear operativo" que permita elegir el estado inicial.</li>
           <li><strong>Historial</strong> es exclusivo de operativos finalizados; nunca se mezcla con la actividad en curso.</li>
-          <li>El <strong>Controlador</strong> puede navegar a las mismas pantallas que el Operador, pero todos los inputs, selects y acciones de gestión quedan deshabilitados.</li>
+          <li>El <strong>Controlador</strong> navega Activos e Historial con inputs, selects y acciones de gestión deshabilitados; no tiene acceso a Borradores (ni el tab ni el grupo dentro de Todos).</li>
           <li><strong>Admin</strong> no ve la sección Operativos: su sidebar solo expone Usuarios y roles.</li>
         </ul>
       </div>

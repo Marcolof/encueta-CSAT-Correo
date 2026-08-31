@@ -539,7 +539,7 @@
         <div class="screen-topbar__stripe"></div>
         <div class="screen-topbar__band">
           <img class="screen-topbar__logo" src="../assets/logo correo argentino.svg" alt="Correo Argentino" />
-          <span class="screen-topbar__label">Borrador</span>
+          <span class="screen-topbar__label">Activo</span>
           <a class="slide-back slide-back--band" href="../index.html"><svg class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Volver al hub</a>
         </div>
       </div>
@@ -548,9 +548,10 @@
         <div class="screen-text">
           <span class="slide-eyebrow">Vista Controlador</span>
           <h2>Consulta sin edición</h2>
-          <p>El Controlador puede navegar todo, pero no puede modificar nada.</p>
+          <p>El Controlador consulta Activos e Historial, pero no puede modificar nada ni acceder a Borradores.</p>
           <ul>
-            <li>Puede consultar <strong>todos</strong> los operativos, incluidos borradores.</li>
+            <li>Consulta operativos <strong>Activos</strong> y <strong>Finalizados</strong>.</li>
+            <li>No tiene acceso a Borradores: ni el tab ni el grupo dentro de Todos.</li>
             <li>Inputs, selects y acciones de gestión aparecen deshabilitados.</li>
             <li>No puede guardar, lanzar ni finalizar operativos.</li>
             <li>Pendiente de validar: si necesita exportación manual de resultados.</li>
@@ -558,7 +559,7 @@
           <span class="role-tag role-tag--controlador">Controlador</span>
         </div>
         <div class="screen-frame-wrap">
-          <div class="screen-frame"><iframe src="../prototype/index.html?goto=controlador.detalleBorrador.completo" title="Detalle borrador - Controlador"></iframe></div>
+          <div class="screen-frame"><iframe src="../prototype/index.html?goto=controlador.detalleActivo" title="Detalle activo - Controlador"></iframe></div>
         </div>
       </div>
       </div>

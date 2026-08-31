@@ -431,7 +431,7 @@
             <div class="section-actions"><button onclick="switchOpsTab('activos')">Ver más activos<svg class="lucide-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button></div>
           </div>
 
-          <div class="panel">
+          <div class="panel" id="panelBorradoresTodos">
             <div class="panel-title">
               <div>
                 <h2>Borradores</h2>
@@ -792,7 +792,7 @@
         <div class="permission-grid" style="margin-bottom:18px;">
           <div class="permission-card"><strong>Admin</strong><p class="muted small">Gestiona usuarios y roles.</p></div>
           <div class="permission-card"><strong>Operador</strong><p class="muted small">Crea, configura, lanza y finaliza operativos.</p></div>
-          <div class="permission-card"><strong>Controlador</strong><p class="muted small">Consulta todos los operativos, incluidos borradores, en modo solo lectura.</p></div>
+          <div class="permission-card"><strong>Controlador</strong><p class="muted small">Consulta operativos activos y finalizados en modo solo lectura. No accede a los borradores.</p></div>
         </div>
 
         <div class="panel">
@@ -1048,6 +1048,13 @@
 
       document.getElementById('reportActiveButton').classList.toggle('hidden', currentRole !== 'controlador');
       document.getElementById('reportFinalButton').classList.toggle('hidden', currentRole !== 'controlador');
+
+      // El Controlador no accede a los borradores: se ocultan el tab y su
+      // resumen dentro de "Todos". Antes el Controlador podía consultarlos
+      // en modo solo lectura; se retiró esa capacidad.
+      const hideDrafts = currentRole === 'controlador';
+      document.querySelector('.tab[data-tab="borradores"]').classList.toggle('hidden', hideDrafts);
+      document.getElementById('panelBorradoresTodos').classList.toggle('hidden', hideDrafts);
     }
 
     function showView(id){
@@ -1090,8 +1097,9 @@
     function openDraftDetail(complete=false){
       showView('detalleBorrador');
 
-      // Administra operativos solo el perfil Operador.
-      // El Controlador puede abrir y consultar también borradores, pero en modo solo lectura.
+      // Administra operativos solo el perfil Operador. El Controlador ya no
+      // tiene acceso a los borradores (ver configureNavigation); esta vista
+      // solo queda alcanzable por el Controlador vía deep-link de desarrollo.
       const readonly = currentRole !== 'operador';
 
       document.querySelectorAll('#detalleBorrador input, #detalleBorrador select, #detalleBorrador textarea').forEach(el => {

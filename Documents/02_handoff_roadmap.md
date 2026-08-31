@@ -1,7 +1,7 @@
 # Hand-off y roadmap — Sistema CSAT
 
 **Estado:** Documento vivo  
-**Fecha:** 21/08/2026  
+**Fecha:** 21/08/2026 (última actualización 31/08/2026)  
 **Fase actual:** Prototipo de media fidelidad con dirección visual aplicada + línea base de specs
 
 ---
@@ -132,9 +132,9 @@ La finalización manual no genera obligatoriamente un archivo para Analytics.
 
 ### Controlador
 
-- ve todos los operativos;
-- puede abrir borradores;
-- los campos aparecen deshabilitados;
+- ve operativos Activos e Historial, en modo solo lectura;
+- **no ve Borradores**: el tab no está disponible y el grupo "Borradores" tampoco aparece en el resumen del tab Todos (decisión 31/08/2026, revierte lo documentado antes);
+- si abre el detalle de un operativo activo, los campos aparecen deshabilitados;
 - no puede guardar, lanzar ni finalizar.
 
 ---
@@ -385,6 +385,16 @@ habilitó la Fase 4. Lo que sigue pendiente es la validación de accesibilidad y
 ---
 
 ## 7.bis Registro de cambios
+
+### 31/08/2026
+
+- **Se retira el acceso del Controlador a Borradores** (decisión de producto). Hasta ahora
+  el Controlador podía consultar borradores en modo solo lectura; ese acceso se elimina.
+  El tab "Borradores" y su grupo dentro del resumen "Todos" quedan ocultos para ese rol.
+  Actualizado en el prototipo (`configureNavigation()` en `prototype/index.html`), en
+  `openspec/specs/acceso-y-roles/spec.md` (requisito "Consulta del Controlador") y en
+  `openspec/specs/usuarios-y-roles/spec.md` (alcance del rol). La vista de detalle de un
+  borrador ya no es alcanzable por el Controlador desde la navegación normal.
 
 ### 21/08/2026
 

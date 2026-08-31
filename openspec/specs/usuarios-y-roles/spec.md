@@ -27,7 +27,7 @@ El sistema SHALL ofrecer tres roles asignables, cuyo alcance SHALL estar visible
 
 - **Admin**: gestiona usuarios y roles.
 - **Operador**: crea, configura, lanza y finaliza operativos.
-- **Controlador**: consulta todos los operativos, incluidos borradores, en modo solo lectura.
+- **Controlador**: consulta operativos Activos y Finalizados en modo solo lectura. No accede a los Borradores.
 
 #### Scenario: Alcance de los roles a la vista
 
